@@ -8,5 +8,5 @@ import com.k35dl.g6.models.Product.Product;
 
 @Repository
 public interface ProductRepo extends JpaRepository<Product, Long>{
-    
+    //them ,sua xoa, timtheoid
 }

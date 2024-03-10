@@ -1,6 +1,7 @@
 package com.k35dl.g6.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.k35dl.g6.models.Product.Product;
@@ -11,14 +12,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "orders")
+@Table(name = "customer_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +28,14 @@ public class Order {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "orders", cascade = CascadeType.ALL)
-    private List<Product> products;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    private LocalDateTime orderTime;
+    private LocalDateTime orderDateTime;
+
+    private LocalDateTime deliveryDateTime;
+
+    private String shippingAddress;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

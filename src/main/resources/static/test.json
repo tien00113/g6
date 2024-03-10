@@ -1,0 +1,78 @@
+{
+    "id": 1,
+    "user": {
+        "id": 1,
+        "username": "admintest",
+        "password": "$2a$10$u3ZZTopzI8EXSycrRhvdsO4HgoCDs1ikf6422IemxdFtthfn8izp6",
+        "email": "adminpromax@gmail.com",
+        "firstName": "admintest",
+        "lastName": "promax",
+        "address": null,
+        "phoneNumber": null,
+        "roles": [
+            "ROLE_ADMIN"
+        ],
+        "enabled": true,
+        "authorities": [
+            {
+                "authority": "ROLE_ADMIN"
+            }
+        ],
+        "credentialsNonExpired": true,
+        "accountNonExpired": true,
+        "accountNonLocked": true
+    },
+    "cartItems": [
+        {
+            "id": 22,
+            "product": {
+                "id": 2,
+                "name": "cà phê đen hay",
+                "description": "ngon vcl",
+                "image": "URL hình ảnh",
+                "price": 24000,
+                "salePrice": 17000,
+                "reViewProducts": [],
+                "toppingOptions": [
+                    {
+                        "id": 1,
+                        "name": "chacha",
+                        "price": 12000
+                    }
+                ],
+                "sizeOptions": [
+                    {
+                        "id": 1,
+                        "name": "M",
+                        "price": 10000
+                    }
+                ],
+                "category": {
+                    "id": 1,
+                    "name": "Trà sữa"
+                },
+                "cart": null,
+                "orders": []
+            },
+            "quantity": 4,
+            "price": 96000,
+            "priceSale": 68000,
+            "userId": 1,
+            "sizeOption": {
+                "id": 1,
+                "name": "M",
+                "price": 10000
+            },
+            "toppingOptions": [
+                {
+                    "id": 1,
+                    "name": "chacha",
+                    "price": 12000
+                }
+            ]
+        }
+    ],
+    "totalPrice": 0,
+    "totalItem": 0,
+    "totalSalePrice": 0
+}

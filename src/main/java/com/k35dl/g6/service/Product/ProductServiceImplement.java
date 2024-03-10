@@ -23,12 +23,13 @@ public class ProductServiceImplement implements ProductService{
         Product newProduct = new Product();
 
         newProduct.setName(product.getName());
-        // newProduct.setImage(product.getImage());
+        newProduct.setImage(product.getImage());
         newProduct.setDescription(product.getDescription());
         newProduct.setPrice(product.getPrice());
         newProduct.setSalePrice(product.getSalePrice());
-        // newProduct.setToppingOptions(product.getToppingOptions());
-        // newProduct.setCategory(product.getCategory());
+        newProduct.setSizeOptions(product.getSizeOptions());
+        newProduct.setToppingOptions(product.getToppingOptions());
+        newProduct.setCategory(product.getCategory());
 
         return productRepository.save(newProduct);
     }

@@ -2,8 +2,10 @@ package com.k35dl.g6.controller.Product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.SizeOptionException;
@@ -16,7 +18,7 @@ public class SizeOptionController {
     private SizeOptionService sizeOptionService;
 
     @PostMapping("/api/products/sizes")
-    public SizeOption createSizeOption(SizeOption sizeOption) throws SizeOptionException{
+    public SizeOption createSizeOption(@RequestBody SizeOption sizeOption) throws SizeOptionException{
 
         SizeOption createdSizeOption = sizeOptionService.createSizeOption(sizeOption);
 
@@ -24,7 +26,7 @@ public class SizeOptionController {
     }
 
     @PutMapping("/api/products/sizes/{sizeOptionId}")
-    public SizeOption updateSizeOption(SizeOption sizeOption, Long sizeOptionId) throws SizeOptionException{
+    public SizeOption updateSizeOption(@RequestBody SizeOption sizeOption,@PathVariable Long sizeOptionId) throws SizeOptionException{
 
         SizeOption updatedSizeOption = sizeOptionService.updateSizeOption(sizeOption, sizeOptionId);
 
@@ -32,7 +34,7 @@ public class SizeOptionController {
     }
 
     @DeleteMapping("/api/products/sizes/{sizeOptionId}")
-    public String deleteSizeOption(Long sizeOptionId) throws SizeOptionException{
+    public String deleteSizeOption(@PathVariable Long sizeOptionId) throws SizeOptionException{
 
         String message = sizeOptionService.deleteSizeOption(sizeOptionId);
 

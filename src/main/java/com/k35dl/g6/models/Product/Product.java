@@ -1,5 +1,6 @@
 package com.k35dl.g6.models.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.k35dl.g6.models.Cart;
@@ -30,28 +31,29 @@ public class Product {
     private String image;
     private int price = 0;
     private int salePrice = price;
+    // private int quantity;
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ReViewProduct> reViewProducts;
+    private List<ReViewProduct> reViewProducts = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "product_topping", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name="topping_option_id"))
-    private List<ToppingOption> toppingOptions;
+    private List<ToppingOption> toppingOptions = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "product_size", joinColumns = @JoinColumn(name="product_id"), inverseJoinColumns = @JoinColumn(name ="size_option_id"))
-    private List<SizeOption> sizeOptions;
+    private List<SizeOption> sizeOptions = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    // @ManyToOne
+    // @JoinColumn(name = "cart_id")
+    // private Cart cart;
 
-    @ManyToMany
-    @JoinTable(name = "orders", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "orders_id"))
-    private List<Order> orders;
+    // @ManyToMany
+    // @JoinTable(name = "orders", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "orders_id"))
+    // private List<Order> orders = new ArrayList<>();
 
 }

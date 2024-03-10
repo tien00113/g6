@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.models.Category;
-import com.k35dl.g6.service.CategorySerVice;
+import com.k35dl.g6.service.CategoryService;
 
 @RestController
 public class CategoryController {
     @Autowired
-    private CategorySerVice categorySerVice;
+    private CategoryService categorySerVice;
 
     @PostMapping("/api/categorys")
     public Category creatCategory(@RequestBody Category category) throws Exception{

@@ -1,18 +1,20 @@
 package com.k35dl.g6.service;
 
-import java.util.List;
-
+import com.k35dl.g6.exceptions.ProductException;
+import com.k35dl.g6.exceptions.UserException;
 import com.k35dl.g6.models.Cart;
-import com.k35dl.g6.models.Product.Product;
+import com.k35dl.g6.models.User;
+import com.k35dl.g6.request.AddCartItemRequest;
 
 public interface CartService {
-    public Cart addToCart(List<Product> products);
+    public Cart ceateCart(User user);
 
-    public Cart updateCart(Cart cart, Long cartId);
+    public String addToCart(Long userId, AddCartItemRequest request) throws ProductException, UserException, Exception;
 
-    public String deleteCart(Long cartId);
+    public Cart findUserCart(Long userId);
 
-    public Cart findCartById(Long cartId);
+    public Cart findCartById(Long cartId) throws Exception;
 
-    public List<Cart> getAllCarts();
+    public Cart testCart() throws ProductException;
+
 }
