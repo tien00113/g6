@@ -48,6 +48,9 @@ public class User implements UserDetails{
     @NotBlank
     private String lastName;
 
+    private String address;
+    private String phoneNumber;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles")

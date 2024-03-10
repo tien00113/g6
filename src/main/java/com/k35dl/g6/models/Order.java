@@ -27,7 +27,7 @@ public class Order {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<Product> products;
 
     private LocalDateTime orderTime;

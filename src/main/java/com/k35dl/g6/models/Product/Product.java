@@ -2,7 +2,9 @@ package com.k35dl.g6.models.Product;
 
 import java.util.List;
 
+import com.k35dl.g6.models.Cart;
 import com.k35dl.g6.models.Category;
+import com.k35dl.g6.models.Order;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -43,5 +45,13 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @ManyToMany
+    @JoinTable(name = "orders", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "orders_id"))
+    private List<Order> orders;
 
 }
