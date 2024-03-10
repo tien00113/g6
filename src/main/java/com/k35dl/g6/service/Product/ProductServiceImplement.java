@@ -39,8 +39,6 @@ public class ProductServiceImplement implements ProductService{
 
         Product product = findProductById(productId);
         
-        //kiểm tra xem user này là admin hay không (ROLE_ADMIN) rồi xóa
-
         productRepository.delete(product);
         return "Đã xóa thành công";
     }

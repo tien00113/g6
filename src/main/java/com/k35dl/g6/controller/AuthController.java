@@ -1,5 +1,7 @@
 package com.k35dl.g6.controller;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.config.JwtProvider;
-import com.k35dl.g6.models.Cart;
 import com.k35dl.g6.models.User;
 import com.k35dl.g6.repository.UserRepository;
 import com.k35dl.g6.request.LoginRequest;
@@ -53,15 +54,17 @@ public class AuthController {
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        // mặc định tài khoản đăng ký mới là role user
+        newUser.setRoles(Collections.singleton(User.Role.valueOf("USER")));
 
         User savedUser = userRepository.save(newUser);
 
-        Cart cart = cartService.ceateCart(savedUser);
+        cartService.ceateCart(savedUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(),
                 savedUser.getPassword());
 
-        // SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = JwtProvider.generateToken(authentication);
 
@@ -96,6 +99,8 @@ public class AuthController {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
+    // cấu hình logout đơn giản:: token vẫn còn hiệu lực nếu chưa hết hạn-> hủy hiệu
+    // lực của token khi đăng xuất cần cấu hình phức tạp, giảm hiệu suất//
     @GetMapping("/logout")
     public String logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

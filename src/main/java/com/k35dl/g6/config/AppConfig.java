@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.k35dl.g6.models.User.Role;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -25,6 +27,7 @@ public class AppConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(Authorize -> Authorize
             .requestMatchers("/api/**").authenticated()
+            .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
             .anyRequest().permitAll())
             .addFilterBefore(new JwtValidatior(), BasicAuthenticationFilter.class)
             .csrf(csrf -> csrf.disable())

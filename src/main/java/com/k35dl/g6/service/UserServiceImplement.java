@@ -1,6 +1,8 @@
 package com.k35dl.g6.service;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ public class UserServiceImplement implements UserSerVice{
         newUser.setLastName(user.getLastName());
         newUser.setPassword(user.getPassword());
         newUser.setId(user.getId());
+        newUser.setRoles(Collections.singleton(User.Role.USER));
 
         User savedUser = userRepository.save(newUser);
 
@@ -90,7 +93,7 @@ public class UserServiceImplement implements UserSerVice{
             throw new IllegalArgumentException("Người dùng không tồn tại");
         }
 
-        if (!admin.getRoles().contains(User.Role.ROLE_ADMIN)) {
+        if (!admin.getRoles().contains(User.Role.ADMIN)) {
             throw new IllegalArgumentException("Chỉ có admin mới có quyền thay đổi roles");
         }
 
@@ -102,5 +105,11 @@ public class UserServiceImplement implements UserSerVice{
         }
 
         return targetUser;
+    }
+
+    @Override
+    public List<User> getAllusers() {
+        
+        return userRepository.findAll();
     }
 }

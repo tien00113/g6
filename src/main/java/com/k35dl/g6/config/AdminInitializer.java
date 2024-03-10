@@ -2,8 +2,11 @@ package com.k35dl.g6.config;
 
 import java.util.Collections;
 
+import javax.management.relation.Role;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,19 +25,21 @@ public class AdminInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        if (userRepository.findByUsernameOrEmail("admintest", "admintest") == null) {
+        if (userRepository.findByUsernameOrEmail("admin", "admin") == null) {
             User admin = new User();
-            admin.setUsername("admintest");
+            admin.setUsername("admin");
 
             admin.setPassword(passwordEncoder.encode("12345678"));
 
-            admin.setFirstName("admintest");
+            admin.setFirstName("admin");
 
             admin.setLastName("promax");
 
-            admin.setEmail("adminpromax@gmail.com");
+            admin.setEmail("adminpromaximum@gmail.com");
 
-            admin.setRoles(Collections.singleton(User.Role.ROLE_ADMIN));
+            // admin.setRoles(Collections.singleton(User.Role.ADMIN));
+            admin.setRoles(Collections.singleton(User.Role.valueOf("ADMIN")));
+            // admin.setRoles(Collections.singleton(User.Role.valueOf("ADMIN")));
 
             userRepository.save(admin);
         }

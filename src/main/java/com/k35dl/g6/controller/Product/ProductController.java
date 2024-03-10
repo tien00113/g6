@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.ProductException;
@@ -28,6 +28,7 @@ import com.k35dl.g6.service.Product.SizeOptionService;
 import com.k35dl.g6.service.Product.ToppingOptionService;
 
 @RestController
+@RequestMapping("/admin")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -41,7 +42,7 @@ public class ProductController {
     @Autowired
     private ToppingOptionService toppingOptionService;
 
-    @PostMapping("/api/products")
+    @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest createProductRequest)
             throws Exception {
 
@@ -94,7 +95,7 @@ public class ProductController {
         return new ResponseEntity<>(createdProduct, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/api/products/{productId}")
+    @PutMapping("/products/{productId}")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product, @PathVariable Long productId)
             throws Exception {
 
@@ -103,7 +104,7 @@ public class ProductController {
         return new ResponseEntity<>(updatedProduct, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/api/products/{productId}")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) throws ProductException {
         String message = productService.deleteProduct(productId);
         ApiResponse res = new ApiResponse(message, true);
@@ -111,7 +112,7 @@ public class ProductController {
         return new ResponseEntity<ApiResponse>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/api/products")
+    @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
 
         List<Product> allProducts = productService.getAllProducts();

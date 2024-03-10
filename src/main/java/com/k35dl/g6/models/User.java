@@ -7,8 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.k35dl.g6.converters.RoleListConverter;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,9 +27,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @Data
-public class User implements UserDetails{
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,12 +57,13 @@ public class User implements UserDetails{
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles")
+    @Convert(converter = RoleListConverter.class)
     private Collection<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_"+role.name()))
                 .collect(Collectors.toList());
     }
 
@@ -94,9 +98,7 @@ public class User implements UserDetails{
     }
 
     public enum Role {
-        ROLE_USER,
-        ROLE_ADMIN
+        USER,
+        ADMIN
     }
 }
-
-
