@@ -2,11 +2,9 @@ package com.k35dl.g6.config;
 
 import java.util.Collections;
 
-import javax.management.relation.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +35,7 @@ public class AdminInitializer implements CommandLineRunner {
 
             admin.setEmail("adminpromaximum@gmail.com");
 
-            // admin.setRoles(Collections.singleton(User.Role.ADMIN));
             admin.setRoles(Collections.singleton(User.Role.valueOf("ADMIN")));
-            // admin.setRoles(Collections.singleton(User.Role.valueOf("ADMIN")));
 
             userRepository.save(admin);
         }

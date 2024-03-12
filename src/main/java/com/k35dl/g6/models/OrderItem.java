@@ -28,6 +28,7 @@ public class OrderItem {
 
     private int price;
     private int priceSale;
+    private int quantity;
 
     private Long userId;
     private LocalDateTime deiveryDateTime;
