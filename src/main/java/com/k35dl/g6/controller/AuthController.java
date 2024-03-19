@@ -23,6 +23,7 @@ import com.k35dl.g6.response.AuthResponse;
 import com.k35dl.g6.service.CartService;
 import com.k35dl.g6.service.CustomerUserDetailsService;
 
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -76,12 +77,13 @@ public class AuthController {
     @PostMapping("/signin")
     public AuthResponse signin(@RequestBody LoginRequest loginRequest) {
 
-        Authentication authentication = authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        String token = JwtProvider.generateToken(authentication);
+    Authentication authentication = authenticate(loginRequest.getEmail(),
+    loginRequest.getPassword());
+    String token = JwtProvider.generateToken(authentication);
 
-        AuthResponse response = new AuthResponse(token, "Đăng nhập thành công");
+    AuthResponse response = new AuthResponse(token, "Đăng nhập thành công");
 
-        return response;
+    return response;
     }
 
     private Authentication authenticate(String usernameOrEmail, String password) {

@@ -7,38 +7,68 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.k35dl.g6.exceptions.ProductException;
+import com.k35dl.g6.models.Category;
 import com.k35dl.g6.models.Product.Product;
+import com.k35dl.g6.models.Product.ProductImage;
+import com.k35dl.g6.models.Product.SizeOption;
+import com.k35dl.g6.models.Product.ToppingOption;
+import com.k35dl.g6.repository.CategoryRepository;
+import com.k35dl.g6.repository.Product.ProductImageRepository;
 import com.k35dl.g6.repository.Product.ProductRepo;
+import com.k35dl.g6.repository.Product.SizeOptionRepository;
+import com.k35dl.g6.repository.Product.ToppingOptionRepository;
 
 @Service
-public class ProductServiceImplement implements ProductService{
+public class ProductServiceImplement implements ProductService {
 
     @Autowired
     private ProductRepo productRepository;
 
+    @Autowired
+    private ProductImageRepository productImageRepository;
+
+    @Autowired
+    private SizeOptionRepository sizeOptionRepository;
+
+    @Autowired
+    private ToppingOptionRepository toppingOptionRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
-    public Product createProduct(Product product) throws Exception{
+    public Product createProduct(Product product, List<SizeOption> sizeOptions, List<ToppingOption> toppingOptions, List<ProductImage> images) throws Exception {
+        if (product.getCategory() != null && product.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(product.getCategory().getId())
+                    .orElseThrow(() -> new Exception("Category không tồn tại"));
+            product.setCategory(category);
+        } else {
+            throw new Exception("Product phải có category");
+        }
 
-        Product newProduct = new Product();
-
-        newProduct.setName(product.getName());
-        newProduct.setImage(product.getImage());
-        newProduct.setDescription(product.getDescription());
-        newProduct.setPrice(product.getPrice());
-        newProduct.setSalePrice(product.getSalePrice());
-        newProduct.setSizeOptions(product.getSizeOptions());
-        newProduct.setToppingOptions(product.getToppingOptions());
-        newProduct.setCategory(product.getCategory());
-
-        return productRepository.save(newProduct);
+        for (SizeOption sizeOption : sizeOptions) {
+            sizeOption.setProduct(product);
+            product.getSizeOptions().add(sizeOption);
+        }
+    
+        for (ToppingOption toppingOption : toppingOptions) {
+            toppingOption.setProduct(product);
+            product.getToppingOptions().add(toppingOption);
+        }
+    
+        for (ProductImage image : images) {
+            image.setProduct(product);
+            product.getImage().add(image);
+        }
+    
+        return productRepository.save(product);
     }
 
     @Override
     public String deleteProduct(Long productId) throws ProductException {
 
         Product product = findProductById(productId);
-        
+
         productRepository.delete(product);
         return "Đã xóa thành công";
     }
@@ -46,37 +76,37 @@ public class ProductServiceImplement implements ProductService{
     @Override
     public Product updateProduct(Product product, Long productId) throws ProductException {
         Optional<Product> product1 = productRepository.findById(productId);
-        
+
         if (product1.isEmpty()) {
-            throw new ProductException("không tìm thấy sản phẩm có id "+productId);
+            throw new ProductException("không tìm thấy sản phẩm có id " + productId);
         }
 
         Product oldProduct = product1.get();
 
-        if(product.getName() != null){
+        if (product.getName() != null) {
             oldProduct.setName(product.getName());
         }
 
-        if(product.getImage() != null){
+        if (product.getImage() != null) {
             oldProduct.setImage(product.getImage());
         }
-        if(product.getDescription()!= null){
+        if (product.getDescription() != null) {
             oldProduct.setDescription(product.getDescription());
         }
 
-        if(product.getCategory()!= null){
+        if (product.getCategory() != null) {
             oldProduct.setCategory(product.getCategory());
         }
 
-        if(product.getPrice() != 0){
+        if (product.getPrice() != 0) {
             oldProduct.setPrice(product.getPrice());
         }
 
-        if(product.getSalePrice()!=product.getPrice()){
+        if (product.getSalePrice() != product.getPrice()) {
             oldProduct.setSalePrice(product.getSalePrice());
         }
 
-        if(product.getToppingOptions()!= null){
+        if (product.getToppingOptions() != null) {
             oldProduct.setToppingOptions(product.getToppingOptions());
         }
 
@@ -87,7 +117,7 @@ public class ProductServiceImplement implements ProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        
+
         return productRepository.findAll();
     }
 
@@ -96,10 +126,10 @@ public class ProductServiceImplement implements ProductService{
         Optional<Product> opt = productRepository.findById(productId);
 
         if (opt.isEmpty()) {
-			throw new ProductException("Không tìm thấy sản phẩm có id" + productId);
-		}
+            throw new ProductException("Không tìm thấy sản phẩm có id" + productId);
+        }
 
         return opt.get();
     }
-    
+
 }

@@ -4,9 +4,12 @@ import java.util.List;
 
 import com.k35dl.g6.exceptions.ProductException;
 import com.k35dl.g6.models.Product.Product;
+import com.k35dl.g6.models.Product.ProductImage;
+import com.k35dl.g6.models.Product.SizeOption;
+import com.k35dl.g6.models.Product.ToppingOption;
 
 public interface ProductService {
-    public Product createProduct(Product product) throws Exception;
+    public Product createProduct(Product product,List<SizeOption> sizeOptions, List<ToppingOption> toppingOptions, List<ProductImage> images) throws Exception;
 
     public String deleteProduct(Long productId) throws ProductException;
 

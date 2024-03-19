@@ -1,5 +1,6 @@
 package com.k35dl.g6.models.Product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.k35dl.g6.models.User;
 
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ public class ReViewProduct {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 
     private int rating;

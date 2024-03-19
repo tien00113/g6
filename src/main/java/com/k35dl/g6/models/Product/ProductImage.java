@@ -2,6 +2,7 @@ package com.k35dl.g6.models.Product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,16 +13,15 @@ import lombok.Data;
 
 @Entity
 @Data
-public class ToppingOption {
+public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
 
-    private String name;
-    private int price=0;
+    private String imageUrl;
 }

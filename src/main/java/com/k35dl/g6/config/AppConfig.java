@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.k35dl.g6.models.User.Role;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,17 +22,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 public class AppConfig {
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(Authorize -> Authorize
-            .requestMatchers("/api/**").authenticated()
-            .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-            .anyRequest().permitAll())
-            .addFilterBefore(new JwtValidatior(), BasicAuthenticationFilter.class)
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        
-            return http.build();
+                .authorizeHttpRequests(Authorize -> Authorize
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/localhost:5000/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().permitAll())
+                .addFilterBefore(new JwtValidatior(), BasicAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
+        return http.build();
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
@@ -41,25 +41,27 @@ public class AppConfig {
 
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                
+
                 CorsConfiguration cfg = new CorsConfiguration();
-                
-                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+
+                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000/","http://localhost:5000/"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
+                // cfg.setAllowedHeaders(Collections.singletonList("*"));
+                cfg.setAllowedHeaders(Arrays.asList("*", "X-Client-Port"));
                 cfg.setExposedHeaders(Arrays.asList("Authorization"));
+                // cfg.setExposedHeaders(Arrays.asList("X-Forwarded-Port"));
                 cfg.setMaxAge(3600L);
 
                 return cfg;
             }
-            
+
         };
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-		
+
 }
