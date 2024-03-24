@@ -44,17 +44,17 @@ public class ProductController {
         List<SizeOption> sizeOptions = createProductRequest.getSizeOptions();
         List<ToppingOption> toppingOptions = createProductRequest.getToppingOptions();
         List<ProductImage> images = createProductRequest.getProductImages();
-        if (product.getCategory() != null && product.getCategory().getId() != null) {
-            Category category = categoryService.findCategoryById(product.getCategory().getId());
+        // if (product.getCategory() != null && product.getCategory().getId() != null) {
+        //     Category category = categoryService.findCategoryById(product.getCategory().getId());
 
-            if (category != null) {
-                product.setCategory(category);
-            } else {
-                throw new Exception("Category không tồn tại");
-            }
-        } else {
-            throw new Exception("Product phải có category");
-        }
+        //     if (category != null) {
+        //         product.setCategory(category);
+        //     } else {
+        //         throw new Exception("Category không tồn tại");
+        //     }
+        // } else {
+        //     throw new Exception("Product phải có category");
+        // }
 
         Product createdProduct = productService.createProduct(product,sizeOptions,toppingOptions,images);
 

@@ -47,8 +47,8 @@ public class AppConfig {
                 cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000/","http://localhost:5000/"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
-                // cfg.setAllowedHeaders(Collections.singletonList("*"));
-                cfg.setAllowedHeaders(Arrays.asList("*", "X-Client-Port"));
+                cfg.setAllowedHeaders(Collections.singletonList("*"));
+                // cfg.setAllowedHeaders(Arrays.asList("*", "X-Client-Port"));
                 cfg.setExposedHeaders(Arrays.asList("Authorization"));
                 // cfg.setExposedHeaders(Arrays.asList("X-Forwarded-Port"));
                 cfg.setMaxAge(3600L);

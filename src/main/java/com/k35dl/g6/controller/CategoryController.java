@@ -1,7 +1,10 @@
 package com.k35dl.g6.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,7 +19,7 @@ public class CategoryController {
     @Autowired
     private CategoryService categorySerVice;
 
-    @PostMapping("/api/categorys")
+    @PostMapping("/admin/categorys")
     public Category creatCategory(@RequestBody Category category) throws Exception{
 
         Category createdCategory = categorySerVice.createCategory(category);
@@ -24,7 +27,7 @@ public class CategoryController {
         return createdCategory;
     }
 
-    @PutMapping("/api/categorys/{categoryId}")
+    @PutMapping("/admin/categorys/{categoryId}")
     public Category updatCategory(@RequestBody Category category, @PathVariable Long categoryId) throws Exception{
 
         Category updatedCategory = categorySerVice.updateCategory(category, categoryId);
@@ -32,11 +35,17 @@ public class CategoryController {
         return updatedCategory;
     }
 
-    @DeleteMapping("/api/categorys/{categoryId}")
+    @DeleteMapping("/admin/categorys/{categoryId}")
     public String deleteCategory(@PathVariable Long categoryId) throws Exception{
 
         String message = categorySerVice.deleteCategory(categoryId);
 
         return message;
+    }
+
+    @GetMapping("/admin/categorys")
+    public List<Category> getAllCategory() throws Exception{
+
+        return categorySerVice.getAllCategory();
     }
 }
