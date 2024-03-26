@@ -33,7 +33,7 @@ public class AdminInitializer implements CommandLineRunner {
 
             admin.setLastName("promax");
 
-            admin.setEmail("adminpromaximum@gmail.com");
+            admin.setEmail("admin@gmail.com");
 
             admin.setRoles(Collections.singleton(User.Role.valueOf("ADMIN")));
 

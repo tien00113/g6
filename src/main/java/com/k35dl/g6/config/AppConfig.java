@@ -25,6 +25,7 @@ public class AppConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(Authorize -> Authorize
+                        .requestMatchers("/allproduct").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/localhost:5000/**").hasAuthority("ROLE_ADMIN")

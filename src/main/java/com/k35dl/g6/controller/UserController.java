@@ -3,6 +3,7 @@ package com.k35dl.g6.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,13 @@ public class UserController {
         response.setStatus(true);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt) throws UserException{
+        User user = userSerVice.findUserByJwt(jwt);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 }

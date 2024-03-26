@@ -1,8 +1,11 @@
 package com.k35dl.g6.controller;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,22 +13,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.config.JwtProvider;
+import com.k35dl.g6.exceptions.ProductException;
 import com.k35dl.g6.models.User;
+import com.k35dl.g6.models.Product.Product;
 import com.k35dl.g6.repository.UserRepository;
 import com.k35dl.g6.request.LoginRequest;
 import com.k35dl.g6.response.AuthResponse;
 import com.k35dl.g6.service.CartService;
 import com.k35dl.g6.service.CustomerUserDetailsService;
-
+import com.k35dl.g6.service.Product.ProductService;
 
 @RestController
-@RequestMapping("/auth")
 public class AuthController {
     @Autowired
     private UserRepository userRepository;
@@ -39,7 +44,10 @@ public class AuthController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping("/signup")
+    @Autowired
+    private ProductService productService;
+
+    @PostMapping("/auth/signup")
     public AuthResponse createUser(@RequestBody User user) throws Exception {
 
         User isExist = userRepository.findByEmail(user.getEmail());
@@ -74,16 +82,16 @@ public class AuthController {
         return response;
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/auth/signin")
     public AuthResponse signin(@RequestBody LoginRequest loginRequest) {
 
-    Authentication authentication = authenticate(loginRequest.getEmail(),
-    loginRequest.getPassword());
-    String token = JwtProvider.generateToken(authentication);
+        Authentication authentication = authenticate(loginRequest.getEmail(),
+                loginRequest.getPassword());
+        String token = JwtProvider.generateToken(authentication);
 
-    AuthResponse response = new AuthResponse(token, "Đăng nhập thành công");
+        AuthResponse response = new AuthResponse(token, "Đăng nhập thành công");
 
-    return response;
+        return response;
     }
 
     private Authentication authenticate(String usernameOrEmail, String password) {
@@ -103,13 +111,25 @@ public class AuthController {
 
     // cấu hình logout đơn giản:: token vẫn còn hiệu lực nếu chưa hết hạn-> hủy hiệu
     // lực của token khi đăng xuất cần cấu hình phức tạp, giảm hiệu suất//
-    @GetMapping("/logout")
+    @GetMapping("/auth/logout")
     public String logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             SecurityContextHolder.getContext().setAuthentication(null);
         }
+        return "đăng xuất";
+    }
 
-        return "redirect:/signin";
+    @GetMapping("/allproduct")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> allProducts = productService.getAllProducts();
+        return new ResponseEntity<List<Product>>(allProducts, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/allproduct/{productId}")
+    public ResponseEntity<Product> getProductDetail(@PathVariable Long productId) throws ProductException {
+        Product product = productService.findProductById(productId);
+
+        return new ResponseEntity<Product> (product, HttpStatus.OK);
     }
 }

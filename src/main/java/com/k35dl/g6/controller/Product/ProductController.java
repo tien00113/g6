@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.ProductException;
-import com.k35dl.g6.models.Category;
 import com.k35dl.g6.models.Product.Product;
 import com.k35dl.g6.models.Product.ProductImage;
 import com.k35dl.g6.models.Product.SizeOption;
@@ -22,7 +21,6 @@ import com.k35dl.g6.models.Product.ToppingOption;
 import com.k35dl.g6.repository.Product.ProductRepo;
 import com.k35dl.g6.request.CreateProductRequest;
 import com.k35dl.g6.response.ApiResponse;
-import com.k35dl.g6.service.CategoryService;
 import com.k35dl.g6.service.Product.ProductService;
 
 @RestController
@@ -33,9 +31,6 @@ public class ProductController {
     @Autowired
     private ProductRepo productRepo;
 
-    @Autowired
-    private CategoryService categoryService;
-
     @PostMapping("/admin/products")
     public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest createProductRequest)
             throws Exception {
@@ -44,18 +39,7 @@ public class ProductController {
         List<SizeOption> sizeOptions = createProductRequest.getSizeOptions();
         List<ToppingOption> toppingOptions = createProductRequest.getToppingOptions();
         List<ProductImage> images = createProductRequest.getProductImages();
-        // if (product.getCategory() != null && product.getCategory().getId() != null) {
-        //     Category category = categoryService.findCategoryById(product.getCategory().getId());
-
-        //     if (category != null) {
-        //         product.setCategory(category);
-        //     } else {
-        //         throw new Exception("Category không tồn tại");
-        //     }
-        // } else {
-        //     throw new Exception("Product phải có category");
-        // }
-
+        
         Product createdProduct = productService.createProduct(product,sizeOptions,toppingOptions,images);
 
         productRepo.save(createdProduct);
@@ -80,7 +64,7 @@ public class ProductController {
         return new ResponseEntity<ApiResponse>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/api/products")
+    @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
 
         List<Product> allProducts = productService.getAllProducts();
