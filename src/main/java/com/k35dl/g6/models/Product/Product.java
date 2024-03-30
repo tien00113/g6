@@ -2,7 +2,9 @@ package com.k35dl.g6.models.Product;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import com.k35dl.g6.models.Category;
 
@@ -19,12 +21,15 @@ import lombok.Data;
 
 @Entity
 @Data
+@Indexed
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @FullTextField
     private String name;
+
     private String description;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ProductImage> image = new ArrayList<>();

@@ -65,8 +65,8 @@ public class CartServiceImplement implements CartService {
             cartItem.setPrice(price);
             int priceSale = request.getQuantity() * product.getSalePrice();
             cartItem.setPriceSale(priceSale);
-            cartItem.setSizeOption(request.getSizeOption());
-            cartItem.setToppingOptions(request.getToppingOption());
+            // cartItem.setSizeOption(request.getSizeOption());
+            // cartItem.setToppingOptions(request.getToppingOption());
 
             CartItem createdCartItem = cartItemService.createCartItem(cartItem);
             cart.getCartItems().add(createdCartItem);

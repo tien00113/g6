@@ -1,5 +1,6 @@
 package com.k35dl.g6.service.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,10 +14,8 @@ import com.k35dl.g6.models.Product.ProductImage;
 import com.k35dl.g6.models.Product.SizeOption;
 import com.k35dl.g6.models.Product.ToppingOption;
 import com.k35dl.g6.repository.CategoryRepository;
-import com.k35dl.g6.repository.Product.ProductImageRepository;
 import com.k35dl.g6.repository.Product.ProductRepo;
-import com.k35dl.g6.repository.Product.SizeOptionRepository;
-import com.k35dl.g6.repository.Product.ToppingOptionRepository;
+import com.k35dl.g6.utils.SearchProduct;
 
 @Service
 public class ProductServiceImplement implements ProductService {
@@ -25,19 +24,14 @@ public class ProductServiceImplement implements ProductService {
     private ProductRepo productRepository;
 
     @Autowired
-    private ProductImageRepository productImageRepository;
-
-    @Autowired
-    private SizeOptionRepository sizeOptionRepository;
-
-    @Autowired
-    private ToppingOptionRepository toppingOptionRepository;
-
-    @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private SearchProduct searchProduct;
+
     @Override
-    public Product createProduct(Product product, List<SizeOption> sizeOptions, List<ToppingOption> toppingOptions, List<ProductImage> images) throws Exception {
+    public Product createProduct(Product product, List<SizeOption> sizeOptions, List<ToppingOption> toppingOptions,
+            List<ProductImage> images) throws Exception {
         if (product.getCategory() != null && product.getCategory().getId() != null) {
             Category category = categoryRepository.findById(product.getCategory().getId())
                     .orElseThrow(() -> new Exception("Category không tồn tại"));
@@ -50,17 +44,17 @@ public class ProductServiceImplement implements ProductService {
             sizeOption.setProduct(product);
             product.getSizeOptions().add(sizeOption);
         }
-    
+
         for (ToppingOption toppingOption : toppingOptions) {
             toppingOption.setProduct(product);
             product.getToppingOptions().add(toppingOption);
         }
-    
+
         for (ProductImage image : images) {
             image.setProduct(product);
             product.getImage().add(image);
         }
-    
+
         return productRepository.save(product);
     }
 
@@ -130,6 +124,23 @@ public class ProductServiceImplement implements ProductService {
         }
 
         return opt.get();
+    }
+
+    @Override
+    public List<Product> findProductByListId(List<Long> productIds) throws ProductException {
+        List<Product> products = new ArrayList<>();
+        for (Long id : productIds) {
+            Product product = productRepository.findById(id)
+                    .orElseThrow(() -> new ProductException("Product not found with id: " + id));
+            products.add(product);
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> findProductByName(String productName) throws ProductException {
+        
+        return searchProduct.searchByProductName(productName);
     }
 
 }

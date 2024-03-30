@@ -2,6 +2,7 @@ package com.k35dl.g6.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +67,11 @@ public class OrderServiceImplelment implements OrderService {
                 orderItem.setPriceSale(item.getPriceSale());
                 orderItem.setProduct(item.getProduct());
                 orderItem.setUserId(item.getUserId());
+                //set size, quantity, topping cho orderitem lấy từ cartitem.
+
+                orderItem.setQuantity(item.getQuantity());
+                orderItem.setSizeOption(item.getSizeOption());
+                orderItem.setToppingOptions(new HashSet<>(item.getToppingOptions()));
 
                 OrderItem createOrderItem = orderItemRepository.save(orderItem);
 

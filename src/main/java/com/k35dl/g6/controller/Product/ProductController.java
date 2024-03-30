@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.ProductException;
@@ -69,5 +70,12 @@ public class ProductController {
 
         List<Product> allProducts = productService.getAllProducts();
         return new ResponseEntity<List<Product>>(allProducts, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("allproduct/search")
+    public ResponseEntity<List<Product>> getProductByName(@RequestParam String productName) throws ProductException {
+        List<Product> results = productService.findProductByName(productName);
+        
+        return new ResponseEntity<List<Product>>(results, HttpStatus.ACCEPTED);
     }
 }

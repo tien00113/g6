@@ -19,7 +19,7 @@ import com.k35dl.g6.service.OrderService;
 import com.k35dl.g6.service.UserSerVice;
 
 @RestController
-@RequestMapping("/api/order/")
+// @RequestMapping("/api/order/")
 public class OrderController {
     @Autowired
     private UserSerVice userSerVice;
@@ -27,7 +27,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/")
+    @PostMapping("/api/order")
     public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request, @RequestHeader("Authorization") String jwt){
         User user = userSerVice.findUserByJwt(jwt);
 
@@ -36,7 +36,7 @@ public class OrderController {
         return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/api/order/user")
     public ResponseEntity<List<Order>> userOrderHistory(@RequestHeader("Authorization") String jwt){
 
         User user = userSerVice.findUserByJwt(jwt);

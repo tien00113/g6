@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.config.JwtProvider;
@@ -130,6 +131,15 @@ public class AuthController {
     public ResponseEntity<Product> getProductDetail(@PathVariable Long productId) throws ProductException {
         Product product = productService.findProductById(productId);
 
-        return new ResponseEntity<Product> (product, HttpStatus.OK);
+        return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
+
+    @PostMapping("/allproduct/cart")
+    public ResponseEntity<List<Product>> getProductInCart(@RequestBody List<Long> productIds)
+            throws ProductException {
+        List<Product> products = productService.findProductByListId(productIds);
+
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
 }

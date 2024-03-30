@@ -18,4 +18,8 @@ public interface ProductService {
     public List<Product> getAllProducts();
 
     public Product findProductById(Long productId) throws ProductException;
+
+    public List<Product> findProductByListId(List<Long> productIds) throws ProductException;
+
+    public List<Product> findProductByName(String productName) throws ProductException;
 }

@@ -1,8 +1,10 @@
 package com.k35dl.g6.models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -29,6 +32,19 @@ public class Order {
 
     @Column(name = "order_id")
     private String orderId;
+
+    @PrePersist
+    public void generateOrderId() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+        String datePart = now.format(formatter);
+        String randomPart = new Random().ints(65, 91)
+                .mapToObj(i -> (char) i)
+                .limit(6)
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+        this.orderId = datePart + "H2T" + randomPart;
+    }
 
     @ManyToOne
     private User user;
@@ -47,7 +63,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    
+
     private int totalPrice;
     private int totalSalePrice;
 
