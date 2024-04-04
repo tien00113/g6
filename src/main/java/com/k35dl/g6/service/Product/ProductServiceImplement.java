@@ -15,7 +15,8 @@ import com.k35dl.g6.models.Product.SizeOption;
 import com.k35dl.g6.models.Product.ToppingOption;
 import com.k35dl.g6.repository.CategoryRepository;
 import com.k35dl.g6.repository.Product.ProductRepo;
-import com.k35dl.g6.utils.SearchProduct;
+import com.k35dl.g6.utils.ProductSpecification;
+import com.k35dl.g6.utils.SearchCriteria;
 
 @Service
 public class ProductServiceImplement implements ProductService {
@@ -25,9 +26,6 @@ public class ProductServiceImplement implements ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
-    private SearchProduct searchProduct;
 
     @Override
     public Product createProduct(Product product, List<SizeOption> sizeOptions, List<ToppingOption> toppingOptions,
@@ -138,9 +136,18 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
+    public List<Product> findProductByCategory(Long categoryId) throws ProductException {
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+        if (products.isEmpty()) {
+            throw new ProductException("Không tìm thấy sản phẩm nào với ID danh mục: " + categoryId);
+        }
+        return products;
+    }
+
+    @Override
     public List<Product> findProductByName(String productName) throws ProductException {
-        
-        return searchProduct.searchByProductName(productName);
+
+        return productRepository.findAll(new ProductSpecification(new SearchCriteria("name", ":", productName)));
     }
 
 }

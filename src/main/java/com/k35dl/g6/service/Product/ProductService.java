@@ -21,5 +21,8 @@ public interface ProductService {
 
     public List<Product> findProductByListId(List<Long> productIds) throws ProductException;
 
+    public List<Product> findProductByCategory(Long categoryId) throws ProductException;
+
     public List<Product> findProductByName(String productName) throws ProductException;
+
 }

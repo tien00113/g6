@@ -71,11 +71,20 @@ public class ProductController {
         List<Product> allProducts = productService.getAllProducts();
         return new ResponseEntity<List<Product>>(allProducts, HttpStatus.ACCEPTED);
     }
+    @GetMapping("allproduct/category/{categoryId}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable("categoryId") Long categoryId) {
+        try {
+            List<Product> products = productService.findProductByCategory(categoryId);
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        } catch (ProductException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
-    @GetMapping("allproduct/search")
-    public ResponseEntity<List<Product>> getProductByName(@RequestParam String productName) throws ProductException {
-        List<Product> results = productService.findProductByName(productName);
-        
-        return new ResponseEntity<List<Product>>(results, HttpStatus.ACCEPTED);
+    @GetMapping("/allproduct/search")
+    public ResponseEntity<List<Product>> getProductByName (@RequestParam("query") String productName) throws ProductException{
+        List<Product> products = productService.findProductByName(productName);
+
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 }

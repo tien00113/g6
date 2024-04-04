@@ -43,7 +43,7 @@ public class CategoryController {
         return message;
     }
 
-    @GetMapping("/admin/categorys")
+    @GetMapping("/allproduct/categorys")
     public List<Category> getAllCategory() throws Exception{
 
         return categorySerVice.getAllCategory();

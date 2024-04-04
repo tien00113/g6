@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.k35dl.g6.exceptions.ProductException;
 import com.k35dl.g6.exceptions.UserException;
 import com.k35dl.g6.models.Cart;
 import com.k35dl.g6.models.CartItem;
@@ -29,9 +28,6 @@ public class CartServiceImplement implements CartService {
     private CartItemService cartItemService;
 
     @Autowired
-    private CartService cartService;
-
-    @Autowired
     private CartItemRepository cartItemRepository;
 
     @Override
@@ -52,7 +48,10 @@ public class CartServiceImplement implements CartService {
         CartItem existingCartItem = cartItemRepository.isCartItemExist(userId, request.getProductId());
 
         if (existingCartItem != null && existingCartItem.getProduct().getId().equals(product.getId())) {
-            throw new Exception("Sản phẩm đã có trong giỏ hàng");
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+
+            cartItemRepository.save(existingCartItem);
+
         } else {
             CartItem cartItem = new CartItem();
 
@@ -61,9 +60,9 @@ public class CartServiceImplement implements CartService {
             cartItem.setCart(cart);
             cartItem.setUserId(userId);
 
-            int price = request.getQuantity() * product.getPrice();
+            int price = cartItem.getQuantity() * product.getPrice();
             cartItem.setPrice(price);
-            int priceSale = request.getQuantity() * product.getSalePrice();
+            int priceSale = cartItem.getQuantity() * product.getSalePrice();
             cartItem.setPriceSale(priceSale);
             // cartItem.setSizeOption(request.getSizeOption());
             // cartItem.setToppingOptions(request.getToppingOption());
@@ -111,35 +110,60 @@ public class CartServiceImplement implements CartService {
     }
 
     @Override
-    public Cart testCart() throws ProductException {
-        // CartItem cartItem = new CartItem();
+    public String removeCartItem(Long userId, Long cartItemId) throws UserException {
+        Cart cart = cartRepository.findCartByUserId(userId);
 
-        Cart cart = cartService.findUserCart((long) 1);
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
 
-        CartItem cartItem = new CartItem();
+        if (cartItem == null || !cartItem.getUserId().equals(userId)) {
+            throw new UserException("Không tìm thấy sản phẩm trong giỏ hàng");
+        }
 
-        cartItem.setQuantity(19);
-        cartItem.setPrice(1923234);
+        cart.getCartItems().remove(cartItem);
 
-        // Product product = productService.findProductById((long) 1);
+        cartItemRepository.delete(cartItem);
 
-        cartItem.setCart(cart);
-        // cartItem.setPrice(928283);
-        // cartItem.setPriceSale(236434);
-        // cartItem.setProduct(product);
-        // cartItem.setQuantity(3);
-        // // cartItem.setSizeOption(sizeOption);
-        // // cartItem.set
-        // cartItem.setUserId((long) 1);
+        return "đã xóa sản phẩm khỏi giỏ hàng";
+    }
 
-        // cart.getCartItems().add(createdCartItem);
-        // cart.setTotalItem(2);
-        // cart.setTotalPrice(1090);
-        // cart.setTotalSalePrice(165);
-        cart.setTotalPrice(127327);
-        cart.getCartItems().add(cartItem);
+    @Override
+    public CartItem incrementCartItem(Long userId, Long cartItemId) throws UserException {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
 
-        return cartRepository.save(cart);
+        if (cartItem != null && cartItem.getUserId().equals(userId)) {
+            cartItem.setQuantity(cartItem.getQuantity() + 1);
+            cartItem.setPrice(cartItem.getProduct().getPrice() * cartItem.getQuantity());
+            cartItem.setPriceSale(cartItem.getProduct().getSalePrice() * cartItem.getQuantity());
+
+            cartItemRepository.save(cartItem);
+        } else {
+            throw new UserException("Không tìm thấy sản phẩm trong giỏ hoặc lỗi user");
+        }
+
+        return cartItem;
+    }
+
+    @Override
+    public CartItem decrementCartItem(Long userId, Long cartItemId) throws UserException {
+        Cart cart = cartRepository.findCartByUserId(userId);
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
+
+        if (cartItem != null && cartItem.getUserId().equals(userId)) {
+            if (cartItem.getQuantity() > 1) {
+                cartItem.setQuantity(cartItem.getQuantity() - 1);
+                cartItem.setPrice(cartItem.getProduct().getPrice() * cartItem.getQuantity());
+                cartItem.setPriceSale(cartItem.getProduct().getSalePrice() * cartItem.getQuantity());
+                cartItemRepository.save(cartItem);
+            } else {
+                cart.getCartItems().remove(cartItem);
+                cartItemRepository.delete(cartItem);
+                cartItem = null;
+            }
+        } else {
+            throw new UserException("Không tìm thấy sản phẩm trong giỏ hoặc lỗi user");
+        }
+
+        return cartItem;
     }
 
 }
