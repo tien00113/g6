@@ -41,7 +41,7 @@ public class CartItemServiceImplement implements CartItemService {
             item.setPrice(item.getQuantity() * item.getProduct().getPrice());
             item.setPriceSale(item.getQuantity() * item.getProduct().getSalePrice());
             item.setSizeOption(cartItem.getSizeOption());
-            item.setToppingOptions(cartItem.getToppingOptions());
+            item.setToppingOption(cartItem.getToppingOption());
         }
 
         return cartItemRepository.save(item);

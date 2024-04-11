@@ -46,7 +46,7 @@ public class CartItem {
 
     @ManyToOne
     private SizeOption sizeOption;
-    @ManyToMany
-    private Set<ToppingOption> toppingOptions;
+    @ManyToOne
+    private ToppingOption toppingOption;
 
 }

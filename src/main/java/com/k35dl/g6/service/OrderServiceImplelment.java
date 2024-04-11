@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.OrderItem;
 import com.k35dl.g6.models.User;
 import com.k35dl.g6.models.Order.OrderStatus;
-import com.k35dl.g6.models.Product.Product;
 import com.k35dl.g6.repository.AddressRepository;
 import com.k35dl.g6.repository.OrderItemRepository;
 import com.k35dl.g6.repository.OrderRepository;
@@ -46,6 +46,19 @@ public class OrderServiceImplelment implements OrderService {
 
         shipAdress.setUser(user);
 
+        if (user.getAddress().isEmpty()) {
+            shipAdress.setIsDefault(true);
+        } else if (shipAdress.getIsDefault() == true) {
+            Set<Address> addresses = user.getAddress();
+
+            for (Address address : addresses) {
+                if (address.getIsDefault() == true) {
+                    address.setIsDefault(false);
+                    break;
+                }
+            }
+
+        }
         Address address = addressRepository.save(shipAdress);
 
         user.getAddress().add(address);
@@ -67,12 +80,11 @@ public class OrderServiceImplelment implements OrderService {
                 orderItem.setPriceSale(item.getPriceSale());
                 orderItem.setProduct(item.getProduct());
                 orderItem.setUserId(item.getUserId());
-                //set size, quantity, topping cho orderitem lấy từ cartitem.
+                // set size, quantity, topping cho orderitem lấy từ cartitem.
 
                 orderItem.setQuantity(item.getQuantity());
                 orderItem.setSizeOption(item.getSizeOption());
-                orderItem.setToppingOptions(new HashSet<>(item.getToppingOptions()));
-
+                orderItem.setToppingOption(item.getToppingOption());
                 OrderItem createOrderItem = orderItemRepository.save(orderItem);
 
                 orderItems.add(createOrderItem);
@@ -147,39 +159,43 @@ public class OrderServiceImplelment implements OrderService {
     }
 
     @Override
-    public Order orderNow(User user, Address shipAdress, Product product, int quantity) {
+    public Order orderNow(User user, Address shipAdress, OrderItem orderItem, String note) {
 
         shipAdress.setUser(user);
 
+        if (user.getAddress().isEmpty()) {
+            shipAdress.setIsDefault(true);
+        } else if (shipAdress.getIsDefault() == true) {
+            Set<Address> addresses = user.getAddress();
+
+            for (Address address : addresses) {
+                if (address.getIsDefault() == true) {
+                    address.setIsDefault(false);
+                    break;
+                }
+            }
+
+        }
+        
         Address address = addressRepository.save(shipAdress);
 
         user.getAddress().add(address);
         userRepository.save(user);
 
+        Order order = new Order();
         List<OrderItem> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
 
-        OrderItem orderItem = new OrderItem();
+        order.setOrderItems(orderItems);
+        order.setShippingAddress(address);
+        order.setUser(user);
+        order.setTotalPrice(orderItem.getPrice());
+        order.setTotalSalePrice(orderItem.getPriceSale());
+        order.setNote(note);
+        order.setStatus(OrderStatus.PLACED);
+        order.setCreateAt(LocalDateTime.now());
 
-        orderItem.setPrice(product.getPrice());
-        orderItem.setProduct(product);
-        orderItem.setUserId(user.getId());
-        orderItem.setQuantity(quantity);
-
-        OrderItem createOrderItem = orderItemRepository.save(orderItem);
-
-        orderItems.add(createOrderItem);
-
-        Order createdOrder = new Order();
-
-        createdOrder.setUser(user);
-        createdOrder.setOrderItems(orderItems);
-        createdOrder.setTotalPrice(product.getPrice() * quantity);
-        createdOrder.setShippingAddress(address);
-        createdOrder.setStatus(Order.OrderStatus.PLACED);
-        createdOrder.setCreateAt(LocalDateTime.now());
-
-        Order savedOrder = orderRepository.save(createdOrder);
-
+        Order savedOrder = orderRepository.save(order);
         orderItem.setOrder(savedOrder);
         orderItemRepository.save(orderItem);
 
@@ -210,6 +226,13 @@ public class OrderServiceImplelment implements OrderService {
         List<Order> orders = orderRepository.findAll();
 
         return orders;
+    }
+
+    @Override
+    public Order findOrderByOrderId(String orderId) throws OrderException {
+        Order order = orderRepository.findByOrderId(orderId);
+
+        return order;
     }
 
 }

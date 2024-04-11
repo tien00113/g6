@@ -51,9 +51,7 @@ public class User implements UserDetails {
     @Email(message = "Email không hợp lệ")
     private String email;
 
-    @NotBlank
     private String firstName;
-    @NotBlank
     private String lastName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

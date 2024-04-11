@@ -81,4 +81,12 @@ public class AdminOrderController {
 
     }
 
+    @GetMapping("{orderId}")
+    public ResponseEntity<Order> findOrderByOrderId(@PathVariable String orderId) throws OrderException{
+
+        Order order = orderService.findOrderByOrderId(orderId);
+
+        return new ResponseEntity<Order>(order, HttpStatus.OK);
+    }
+
 }

@@ -1,7 +1,5 @@
 package com.k35dl.g6.models;
 
-import java.time.LocalDateTime;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.k35dl.g6.models.Product.Product;
@@ -43,7 +41,7 @@ public class OrderItem {
 
     @ManyToOne
     private SizeOption sizeOption;
-    @ManyToMany
-    private Set<ToppingOption> toppingOptions;
+    @ManyToOne
+    private ToppingOption toppingOption;
 
 }

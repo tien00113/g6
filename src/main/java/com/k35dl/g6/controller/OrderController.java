@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.User;
 import com.k35dl.g6.request.CreateOrderRequest;
+import com.k35dl.g6.request.OrderNow;
 import com.k35dl.g6.service.OrderService;
 import com.k35dl.g6.service.UserSerVice;
 
@@ -36,6 +37,15 @@ public class OrderController {
         return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
 
+    @PostMapping("/api/order/now")
+    public ResponseEntity<Order> createOrderNow(@RequestHeader("Authorization") String jwt, @RequestBody OrderNow request){
+        User user = userSerVice.findUserByJwt(jwt);
+
+        Order order = orderService.orderNow(user, request.getAddress(), request.getOrderItem(), request.getNote());
+
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
+
     @GetMapping("/api/order/user")
     public ResponseEntity<List<Order>> userOrderHistory(@RequestHeader("Authorization") String jwt){
 
@@ -45,6 +55,5 @@ public class OrderController {
 
         return new ResponseEntity<>(orders, HttpStatus.CREATED);
     }
-
     
 }

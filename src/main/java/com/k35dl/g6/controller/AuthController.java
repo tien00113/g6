@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.config.JwtProvider;
@@ -51,10 +49,10 @@ public class AuthController {
     @PostMapping("/auth/signup")
     public AuthResponse createUser(@RequestBody User user) throws Exception {
 
-        User isExist = userRepository.findByEmail(user.getEmail());
+        User isExist = userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail());
 
         if (isExist != null) {
-            throw new Exception("Email này đã được sử dụng bởi tài khoản khác");
+            throw new Exception("Email hoặc username này đã được sử dụng bởi tài khoản khác");
         }
 
         User newUser = new User();

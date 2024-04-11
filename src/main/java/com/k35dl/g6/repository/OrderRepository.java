@@ -13,4 +13,6 @@ import com.k35dl.g6.models.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND (o.status = 'PLACED' OR o.status = 'CONFIRMED' OR o.status = 'SHIPPED' OR o.status = 'DELIVERED' OR o.status = 'CANCELLED')")
     public List<Order> findUserOrders(@Param("userId") Long userId);
+
+    public Order findByOrderId(String orderId);
 }

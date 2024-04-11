@@ -66,6 +66,7 @@ public class Order {
 
     private int totalPrice;
     private int totalSalePrice;
+    private String note;
 
     private LocalDateTime createAt;
 

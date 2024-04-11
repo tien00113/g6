@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.k35dl.g6.models.CartItem;
 
 @Repository
-public interface CartItemRepository extends JpaRepository<CartItem, Long>{
-    
-    @Query("SELECT ci From CartItem ci Where ci.userId=:userId AND ci.product.id=:productId")
-    public CartItem isCartItemExist(@Param("userId") Long userId, @Param("productId") Long productId);
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+
+    @Query("SELECT ci From CartItem ci Where ci.userId=:userId AND ci.product.id=:productId AND ci.sizeOption.id =:sizeOptionId AND (:toppingOptionId is null or ci.toppingOption.id=:toppingOptionId)")
+    public CartItem isCartItemExist(@Param("userId") Long userId, @Param("productId") Long productId,
+            @Param("sizeOptionId") Long sizeOptionId, @Param("toppingOptionId") Long toppingOptionId);
 }
