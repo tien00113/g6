@@ -66,11 +66,11 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Product product, Long productId) throws ProductException {
-        Optional<Product> product1 = productRepository.findById(productId);
+    public Product updateProduct(Product product) throws ProductException {
+        Optional<Product> product1 = productRepository.findById(product.getId());
 
         if (product1.isEmpty()) {
-            throw new ProductException("không tìm thấy sản phẩm có id " + productId);
+            throw new ProductException("không tìm thấy sản phẩm có id " + product.getId());
         }
 
         Product oldProduct = product1.get();
@@ -80,14 +80,21 @@ public class ProductServiceImplement implements ProductService {
         }
 
         if (product.getImage() != null) {
-            oldProduct.setImage(product.getImage());
+            oldProduct.getImage().clear();
+            for (ProductImage image : product.getImage()) {
+                image.setProduct(oldProduct);
+                oldProduct.getImage().add(image);
+            }
         }
+        
         if (product.getDescription() != null) {
             oldProduct.setDescription(product.getDescription());
         }
 
-        if (product.getCategory() != null) {
+        if (product.getCategory() != null && !product.getCategory().equals(oldProduct.getCategory())) {
+
             oldProduct.setCategory(product.getCategory());
+
         }
 
         if (product.getPrice() != 0) {
@@ -98,8 +105,20 @@ public class ProductServiceImplement implements ProductService {
             oldProduct.setSalePrice(product.getSalePrice());
         }
 
+        if(product.getSizeOptions() !=null){
+            oldProduct.getSizeOptions().clear();
+            for (SizeOption sizeOption : product.getSizeOptions()) {
+                sizeOption.setProduct(oldProduct);
+                oldProduct.getSizeOptions().add(sizeOption);
+            }
+        }
+
         if (product.getToppingOptions() != null) {
-            oldProduct.setToppingOptions(product.getToppingOptions());
+            oldProduct.getToppingOptions().clear();
+            for (ToppingOption toppingOption: product.getToppingOptions()) {
+                toppingOption.setProduct(oldProduct);
+                oldProduct.getToppingOptions().add(toppingOption);
+            }
         }
 
         Product updatedProduct = productRepository.save(oldProduct);

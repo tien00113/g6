@@ -70,6 +70,8 @@ public class Order {
 
     private LocalDateTime createAt;
 
+    private LocalDateTime updateStatusAt;
+
     public enum OrderStatus {
         PLACED, // Đơn hàng đang chờ xử lý
         CONFIRMED, // Đơn hàng đã được xác nhận

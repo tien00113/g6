@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.OrderException;
 import com.k35dl.g6.models.Order;
+import com.k35dl.g6.models.Order.OrderStatus;
 import com.k35dl.g6.response.ApiResponse;
 import com.k35dl.g6.service.OrderService;
 import com.k35dl.g6.service.UserSerVice;
@@ -28,7 +30,7 @@ public class AdminOrderController {
     @Autowired
     private UserSerVice userSerVice;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Order>> getALlOrdersHandle() throws OrderException {
         List<Order> orders = orderService.getALlOrders();
 
@@ -81,7 +83,15 @@ public class AdminOrderController {
 
     }
 
-    @GetMapping("{orderId}")
+    @PutMapping("/{orderId}")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable String orderId, @RequestBody OrderStatus status) {
+        
+        Order order = orderService.updateOrderStatus(orderId, status);
+
+        return new ResponseEntity<Order>(order, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/{orderId}")
     public ResponseEntity<Order> findOrderByOrderId(@PathVariable String orderId) throws OrderException{
 
         Order order = orderService.findOrderByOrderId(orderId);

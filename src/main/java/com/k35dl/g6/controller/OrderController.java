@@ -16,6 +16,7 @@ import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.User;
 import com.k35dl.g6.request.CreateOrderRequest;
 import com.k35dl.g6.request.OrderNow;
+import com.k35dl.g6.request.OrderUser;
 import com.k35dl.g6.service.OrderService;
 import com.k35dl.g6.service.UserSerVice;
 
@@ -44,6 +45,15 @@ public class OrderController {
         Order order = orderService.orderNow(user, request.getAddress(), request.getOrderItem(), request.getNote());
 
         return new ResponseEntity<>(order, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/api/order/create")
+    public ResponseEntity<Order> orderUser(@RequestHeader("Authorization") String jwt, @RequestBody OrderUser request){
+        User user = userSerVice.findUserByJwt(jwt);
+
+        Order order = orderService.orderUser(user, request.getShipAddress(), request.getOrderItems(), request.getNote());
+
+        return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
 
     @GetMapping("/api/order/user")

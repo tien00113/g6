@@ -13,10 +13,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+// @Data
+@Setter
+@Getter
 @NoArgsConstructor
 public class Category {
     @Id
@@ -26,7 +30,7 @@ public class Category {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "category")
-    @JsonIgnore
-    private List<Product> products;
+    // @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "category")
+    // @JsonIgnore
+    // private List<Product> products;
 }

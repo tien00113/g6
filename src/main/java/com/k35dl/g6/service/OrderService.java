@@ -7,6 +7,7 @@ import com.k35dl.g6.models.Address;
 import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.OrderItem;
 import com.k35dl.g6.models.User;
+import com.k35dl.g6.models.Order.OrderStatus;
 
 public interface OrderService {
     public Order findOrderById(Long orderId) throws OrderException;
@@ -17,7 +18,11 @@ public interface OrderService {
 
     public Order createOrder(User user, Address shipAdress,List<Long> selectedCartItemIds);
 
+    public Order orderUser(User user, Address shipAddress, List<OrderItem> orderItems, String note);
+
     public List<Order> userOrderHistory(Long userId);
+
+    public Order updateOrderStatus (String orderId, OrderStatus status);
 
     public Order placeOrder(Long orderId) throws OrderException;
 

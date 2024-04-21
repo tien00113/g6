@@ -2,12 +2,13 @@ package com.k35dl.g6.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.k35dl.g6.exceptions.OrderException;
@@ -223,7 +224,7 @@ public class OrderServiceImplelment implements OrderService {
 
     @Override
     public List<Order> getALlOrders() throws OrderException {
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAll(Sort.by(Direction.DESC, "updateStatusAt"));
 
         return orders;
     }
@@ -232,6 +233,43 @@ public class OrderServiceImplelment implements OrderService {
     public Order findOrderByOrderId(String orderId) throws OrderException {
         Order order = orderRepository.findByOrderId(orderId);
 
+        return order;
+    }
+
+    @Override
+    public Order orderUser(User user, Address shipAddress, List<OrderItem> orderItems, String note) {
+        Order createOrder = new Order();
+
+        createOrder.setUser(user);
+        createOrder.setOrderItems(orderItems);
+        createOrder.setShippingAddress(shipAddress);
+        createOrder.setNote(note);
+        createOrder.setStatus(OrderStatus.PLACED);
+        createOrder.setTotalPrice(orderItems.stream().mapToInt(OrderItem::getPrice).sum());
+        createOrder.setTotalSalePrice(orderItems.stream().mapToInt(OrderItem::getPriceSale).sum());
+        createOrder.setCreateAt(LocalDateTime.now());
+        createOrder.setUpdateStatusAt(LocalDateTime.now());
+
+        Order savedOrder = orderRepository.save(createOrder);
+
+        for (OrderItem item : orderItems) {
+            item.setOrder(savedOrder);
+            orderItemRepository.save(item);
+        }
+
+        return savedOrder;
+
+    }
+
+    @Override
+    public Order updateOrderStatus(String orderId, OrderStatus status) {
+
+        Order order = orderRepository.findByOrderId(orderId);
+        if(order != null){
+            order.setStatus(status);
+            order.setUpdateStatusAt(LocalDateTime.now());
+            orderRepository.save(order);
+        }
         return order;
     }
 
