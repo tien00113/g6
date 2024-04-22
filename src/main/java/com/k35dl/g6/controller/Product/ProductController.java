@@ -11,18 +11,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.ProductException;
+import com.k35dl.g6.models.User;
 import com.k35dl.g6.models.Product.Product;
 import com.k35dl.g6.models.Product.ProductImage;
+import com.k35dl.g6.models.Product.ReViewProduct;
 import com.k35dl.g6.models.Product.SizeOption;
 import com.k35dl.g6.models.Product.ToppingOption;
 import com.k35dl.g6.repository.Product.ProductRepo;
 import com.k35dl.g6.request.CreateProductRequest;
+import com.k35dl.g6.request.ReviewProductRequest;
 import com.k35dl.g6.response.ApiResponse;
+import com.k35dl.g6.service.UserSerVice;
 import com.k35dl.g6.service.Product.ProductService;
+import com.k35dl.g6.service.Product.ReViewProductService;
 
 @RestController
 public class ProductController {
@@ -31,6 +37,12 @@ public class ProductController {
 
     @Autowired
     private ProductRepo productRepo;
+
+    @Autowired
+    private ReViewProductService reViewProductService;
+
+    @Autowired
+    private UserSerVice userSerVice;
 
     @PostMapping("/admin/products")
     public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest createProductRequest)
@@ -86,5 +98,13 @@ public class ProductController {
         List<Product> products = productService.findProductByName(productName);
 
         return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    }
+
+    @PutMapping("/api/product/review")
+    public ResponseEntity<List<ReViewProduct>> reviewProduct (@RequestHeader("Authorization") String jwt ,@RequestBody ReviewProductRequest request){
+        User user = userSerVice.findUserByJwt(jwt);
+        List<ReViewProduct> reViewProducts = reViewProductService.createReview(user,request.getOrder(), request.getReviewProducts());
+
+        return new ResponseEntity<List<ReViewProduct>>(reViewProducts, HttpStatus.CREATED);
     }
 }

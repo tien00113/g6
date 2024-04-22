@@ -41,78 +41,25 @@ public class CartServiceImplement implements CartService {
         return cartRepository.save(cart);
     }
 
-    // @Override
-    // public String addToCart(Long userId, AddCartItemRequest request) throws
-    // UserException, Exception {
-    // Cart cart = cartRepository.findCartByUserId(userId);
-
-    // Product product = productService.findProductById(request.getProductId());
-
-    // CartItem existingCartItem = cartItemRepository.isCartItemExist(userId,
-    // request.getProductId(),
-    // request.getSizeOption().getId(), request.getToppingOption().getId());
-
-    // if (existingCartItem != null &&
-    // existingCartItem.getProduct().getId().equals(product.getId())
-    // &&
-    // existingCartItem.getSizeOption().getId().equals(request.getSizeOption().getId())
-    // &&
-    // existingCartItem.getToppingOption().getId().equals(request.getToppingOption().getId()))
-    // {
-    // existingCartItem.setQuantity(existingCartItem.getQuantity() +
-    // request.getQuantity());
-    // // existingCartItem
-
-    // cartItemRepository.save(existingCartItem);
-
-    // } else {
-    // CartItem cartItem = new CartItem();
-
-    // cartItem.setProduct(product);
-    // cartItem.setQuantity(request.getQuantity());
-    // cartItem.setCart(cart);
-    // cartItem.setUserId(userId);
-
-    // int price = cartItem.getQuantity()
-    // * (product.getPrice() + request.getSizeOption().getPrice() +
-    // request.getToppingOption().getPrice());
-    // cartItem.setPrice(price);
-    // int priceSale = cartItem.getQuantity() * (product.getSalePrice() +
-    // request.getSizeOption().getPrice()
-    // + request.getToppingOption().getPrice());
-    // cartItem.setPriceSale(priceSale);
-    // cartItem.setSizeOption(request.getSizeOption());
-    // cartItem.setToppingOption(request.getToppingOption());
-
-    // CartItem createdCartItem = cartItemService.createCartItem(cartItem);
-    // cart.getCartItems().add(createdCartItem);
-
-    // // cartRepository.save(cart);
-    // }
-
-    // return "đã thêm";
-
-    // }
     @Override
     public String addToCart(Long userId, AddCartItemRequest request) throws UserException, Exception {
         Cart cart = cartRepository.findCartByUserId(userId);
 
         Product product = productService.findProductById(request.getProductId());
 
-        CartItem existingCartItem = cartItemRepository.isCartItemExist(userId, request.getProductId(),
-                request.getSizeOption().getId(),
-                request.getToppingOption() != null ? request.getToppingOption().getId() : null);
-
-        if (existingCartItem != null && existingCartItem.getProduct().getId().equals(product.getId())
-                && existingCartItem.getSizeOption().getId().equals(request.getSizeOption().getId())
-                && (existingCartItem.getToppingOption() == null && request.getToppingOption() == null
-                        || existingCartItem.getToppingOption() != null && existingCartItem.getToppingOption().getId()
-                                .equals(request.getToppingOption().getId()))) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
-
-            cartItemRepository.save(existingCartItem);
-
+        CartItem existingCartItem;
+        if (request.getToppingOption() != null) {
+            existingCartItem = cartItemRepository.findCartItemWithTopping(userId, request.getProductId(),
+                    request.getSizeOption().getId(), request.getToppingOption().getId());
         } else {
+            existingCartItem = cartItemRepository.findCartItemWithNullTopping(userId, request.getProductId(),
+                    request.getSizeOption().getId());
+        }
+        if(existingCartItem != null){
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + request.getQuantity());
+            cartItemRepository.save(existingCartItem);
+        }
+        else {
             CartItem cartItem = new CartItem();
 
             cartItem.setProduct(product);

@@ -34,6 +34,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReViewProduct> reViewProducts = new ArrayList<>();
 
+    private double averageRating;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ToppingOption> toppingOptions = new ArrayList<>();
 
