@@ -1,5 +1,6 @@
 package com.k35dl.g6.service.Product;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class ReViewServiceImplement implements ReViewProductService {
 
             reviewProduct.setProduct(product);
             reviewProduct.setUser(user);
+            reviewProduct.setCreateAt(LocalDateTime.now());
 
             ReViewProduct savedReview = reViewProductRepository.save(reviewProduct);
 
@@ -54,6 +56,9 @@ public class ReViewServiceImplement implements ReViewProductService {
 
             reViewProducts.set(i, savedReview);
         }
+
+        reViewProductRepository.updateOrderStatus(order.getId(), LocalDateTime.now());
+
 
         return reViewProducts;
     }

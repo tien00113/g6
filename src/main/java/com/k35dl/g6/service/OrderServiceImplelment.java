@@ -147,6 +147,9 @@ public class OrderServiceImplelment implements OrderService {
     public Order deliveredOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
         order.setStatus(OrderStatus.DELIVERED);
+        order.setUpdateStatusAt(LocalDateTime.now());
+        order.setDeliveryDateTime(LocalDateTime.now());
+
 
         return orderRepository.save(order);
     }
@@ -155,6 +158,8 @@ public class OrderServiceImplelment implements OrderService {
     public Order cancledOrder(Long orderId) throws OrderException {
         Order order = findOrderById(orderId);
         order.setStatus(OrderStatus.CANCELLED);
+        order.setDeliveryDateTime(LocalDateTime.now());
+
 
         return orderRepository.save(order);
     }

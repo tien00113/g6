@@ -23,6 +23,7 @@ import com.k35dl.g6.models.Product.ReViewProduct;
 import com.k35dl.g6.models.Product.SizeOption;
 import com.k35dl.g6.models.Product.ToppingOption;
 import com.k35dl.g6.repository.Product.ProductRepo;
+import com.k35dl.g6.repository.Product.ReViewProductRepository;
 import com.k35dl.g6.request.CreateProductRequest;
 import com.k35dl.g6.request.ReviewProductRequest;
 import com.k35dl.g6.response.ApiResponse;
@@ -43,6 +44,9 @@ public class ProductController {
 
     @Autowired
     private UserSerVice userSerVice;
+
+    @Autowired
+    private ReViewProductRepository reViewProductRepository;
 
     @PostMapping("/admin/products")
     public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequest createProductRequest)
@@ -107,4 +111,5 @@ public class ProductController {
 
         return new ResponseEntity<List<ReViewProduct>>(reViewProducts, HttpStatus.CREATED);
     }
+
 }

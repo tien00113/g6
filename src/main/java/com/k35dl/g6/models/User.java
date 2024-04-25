@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.k35dl.g6.converters.RoleListConverter;
+import com.k35dl.g6.utils.CustomGrantedAuthority;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -66,9 +67,9 @@ public class User implements UserDetails {
     private Collection<Role> roles;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends CustomGrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .map(role -> new CustomGrantedAuthority("ROLE_" + role.name()))
                 .collect(Collectors.toList());
     }
 

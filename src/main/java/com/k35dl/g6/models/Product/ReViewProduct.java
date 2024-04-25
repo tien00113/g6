@@ -1,5 +1,7 @@
 package com.k35dl.g6.models.Product;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.k35dl.g6.models.User;
 
@@ -19,8 +21,8 @@ public class ReViewProduct {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
+    // @JoinColumn(name = "user_id")
+    // @JsonIgnore
     private User user;
 
     @ManyToOne
@@ -30,5 +32,7 @@ public class ReViewProduct {
 
     private int rating;
     private String comment;
+
+    private LocalDateTime createAt;
 
 }
