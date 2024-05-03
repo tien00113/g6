@@ -1,5 +1,6 @@
 package com.k35dl.g6.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.k35dl.g6.exceptions.OrderException;
@@ -18,6 +20,7 @@ import com.k35dl.g6.models.CartItem;
 import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.OrderItem;
 import com.k35dl.g6.models.User;
+import com.k35dl.g6.models.Product.Product;
 import com.k35dl.g6.models.Order.OrderStatus;
 import com.k35dl.g6.repository.AddressRepository;
 import com.k35dl.g6.repository.OrderItemRepository;
@@ -41,6 +44,9 @@ public class OrderServiceImplelment implements OrderService {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Override
     public Order createOrder(User user, Address shipAdress, List<Long> selectedCartItemIds) {
@@ -150,6 +156,10 @@ public class OrderServiceImplelment implements OrderService {
         order.setUpdateStatusAt(LocalDateTime.now());
         order.setDeliveryDateTime(LocalDateTime.now());
 
+        for (OrderItem orderItem : order.getOrderItems()) {
+            Product product = orderItem.getProduct();
+            product.setSold(product.getSold() + orderItem.getQuantity());
+        }
 
         return orderRepository.save(order);
     }
@@ -159,7 +169,6 @@ public class OrderServiceImplelment implements OrderService {
         Order order = findOrderById(orderId);
         order.setStatus(OrderStatus.CANCELLED);
         order.setDeliveryDateTime(LocalDateTime.now());
-
 
         return orderRepository.save(order);
     }
@@ -182,7 +191,7 @@ public class OrderServiceImplelment implements OrderService {
             }
 
         }
-        
+
         Address address = addressRepository.save(shipAdress);
 
         user.getAddress().add(address);
@@ -270,12 +279,60 @@ public class OrderServiceImplelment implements OrderService {
     public Order updateOrderStatus(String orderId, OrderStatus status) {
 
         Order order = orderRepository.findByOrderId(orderId);
-        if(order != null){
+        if (order != null) {
             order.setStatus(status);
             order.setUpdateStatusAt(LocalDateTime.now());
             orderRepository.save(order);
         }
         return order;
+    }
+
+    @Override
+    public Long getTotalRevenue() {
+        List<Order> allOrders = orderRepository.findAll();
+
+        Long revenue = (long) 0;
+
+        for (Order order : allOrders) {
+            revenue += order.getTotalSalePrice();
+        }
+
+        return revenue;
+    }
+
+    @Override
+    public Long getTotalOrder() {
+        return orderRepository.count();
+    }
+
+    public List<Order> getOrdersOnDay(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
+        return orderRepository.findAllDeliveredOrdersByCompletionTimeBetween(startOfDay, endOfDay);
+    }
+    
+    @Override
+    public List<Long> getTotalRevenueInLastDays(int days) {
+        List<Long> revenues = new ArrayList<>();
+        for (int i = 0; i < days; i++) {
+            List<Order> orders = getOrdersOnDay(LocalDate.now().minusDays(i));
+            Long revenue = 0L;
+            for (Order order : orders) {
+                revenue += order.getTotalSalePrice();
+            }
+            revenues.add(revenue);
+        }
+        return revenues;
+    }
+
+    @Override
+    public List<Long> getTotalOrderInLastDays(int days) {
+        List<Long> orderCounts = new ArrayList<>();
+        for (int i = 0; i < days; i++) {
+            List<Order> orders = getOrdersOnDay(LocalDate.now().minusDays(i));
+            orderCounts.add((long) orders.size());
+        }
+        return orderCounts;
     }
 
 }

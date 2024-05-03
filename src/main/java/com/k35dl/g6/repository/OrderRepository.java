@@ -1,5 +1,6 @@
 package com.k35dl.g6.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     public List<Order> findUserOrders(@Param("userId") Long userId);
 
     public Order findByOrderId(String orderId);
+
+    @Query("SELECT o FROM Order o WHERE o.status = 'DELIVERED' AND o.updateStatusAt BETWEEN :startDate AND :endDate")
+    public List<Order> findAllDeliveredOrdersByCompletionTimeBetween(@Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }

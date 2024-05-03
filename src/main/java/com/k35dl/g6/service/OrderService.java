@@ -37,4 +37,13 @@ public interface OrderService {
     public void deleteOrder(Long orderId) throws OrderException;
 
     public List<Order> getALlOrders() throws OrderException;
+
+    public Long getTotalRevenue();
+
+    public Long getTotalOrder();
+
+    public List<Long> getTotalRevenueInLastDays(int days);
+
+    public List<Long> getTotalOrderInLastDays(int days);
+
 }

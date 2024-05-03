@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +34,9 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @PostMapping("/api/order")
     public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request, @RequestHeader("Authorization") String jwt){
         User user = userSerVice.findUserByJwt(jwt);
@@ -54,6 +60,10 @@ public class OrderController {
         User user = userSerVice.findUserByJwt(jwt);
 
         Order order = orderService.orderUser(user, request.getShipAddress(), request.getOrderItems(), request.getNote());
+
+        //gửi thông tin đơn hàng qua websocket
+        newOrder(order);
+        simpMessagingTemplate.convertAndSend("/topic/orders", order);
 
         return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
@@ -80,6 +90,13 @@ public class OrderController {
         Order order = orderService.cancledOrder(orderId);
 
         return new ResponseEntity<Order>(order, HttpStatus.OK);
+    }
+
+    @MessageMapping("/newOrder")
+    @SendTo("/topic/orders")
+    public Order newOrder(Order order) {
+        System.out.println("Dữ liệu order là: "+order);
+        return order;
     }
     
 }

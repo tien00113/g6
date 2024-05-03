@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import com.k35dl.g6.models.User.Role;
 import com.k35dl.g6.repository.UserRepository;
 
 @Service
-public class UserServiceImplement implements UserSerVice{
+public class UserServiceImplement implements UserSerVice {
     @Autowired
     UserRepository userRepository;
 
@@ -38,11 +39,11 @@ public class UserServiceImplement implements UserSerVice{
     public User findUserById(Long userId) throws UserException {
         Optional<User> user = userRepository.findById(userId);
 
-        if(user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
         }
 
-        throw new UserException("Người dùng không tồn tại với id "+userId);
+        throw new UserException("Người dùng không tồn tại với id " + userId);
     }
 
     @Override
@@ -64,20 +65,20 @@ public class UserServiceImplement implements UserSerVice{
     public User updateUser(User user, Long userId) throws UserException {
         Optional<User> user1 = userRepository.findById(userId);
 
-        if(user1.isEmpty()){
+        if (user1.isEmpty()) {
             throw new UserException("người dùng không tồn tại với id " + userId);
         }
 
         User oldUser = user1.get();
         if (user.getFirstName() != null) {
-			oldUser.setFirstName(user.getFirstName());
-		}
-		if (user.getLastName() != null) {
-			oldUser.setLastName(user.getLastName());
-		}
-		if (user.getEmail() != null) {
-			oldUser.setEmail(user.getEmail());
-		}
+            oldUser.setFirstName(user.getFirstName());
+        }
+        if (user.getLastName() != null) {
+            oldUser.setLastName(user.getLastName());
+        }
+        if (user.getEmail() != null) {
+            oldUser.setEmail(user.getEmail());
+        }
 
         User updatedUser = userRepository.save(oldUser);
 
@@ -87,7 +88,7 @@ public class UserServiceImplement implements UserSerVice{
     @Override
     public User setRolesUser(String adminUsername, String targetUsername, Collection<Role> roles) {
         User admin = userRepository.findByUsernameOrEmail(adminUsername, adminUsername);
-        User targetUser = userRepository.findByUsernameOrEmail(targetUsername,targetUsername);
+        User targetUser = userRepository.findByUsernameOrEmail(targetUsername, targetUsername);
 
         if (admin == null || targetUser == null) {
             throw new IllegalArgumentException("Người dùng không tồn tại");
@@ -109,7 +110,22 @@ public class UserServiceImplement implements UserSerVice{
 
     @Override
     public List<User> getAllusers() {
-        
+
         return userRepository.findAll();
     }
+
+    @Override
+    public Long getTotalUser() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(User.Role.USER))
+                .count();
+    }
+
+    @Override
+    public List<User> getUsersWithRoleUser() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(User.Role.USER))
+                .collect(Collectors.toList());
+    }
+
 }

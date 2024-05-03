@@ -21,4 +21,8 @@ public interface UserSerVice {
 
     public List<User> getAllusers();
 
+    public Long getTotalUser();
+
+    public List<User> getUsersWithRoleUser();
+
 }
