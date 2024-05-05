@@ -10,7 +10,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.k35dl.g6.exceptions.OrderException;
@@ -44,9 +43,6 @@ public class OrderServiceImplelment implements OrderService {
 
     @Autowired
     private AddressRepository addressRepository;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     @Override
     public Order createOrder(User user, Address shipAdress, List<Long> selectedCartItemIds) {
@@ -289,15 +285,15 @@ public class OrderServiceImplelment implements OrderService {
 
     @Override
     public Long getTotalRevenue() {
-        List<Order> allOrders = orderRepository.findAll();
+        List<Order> allDeliveredOrders = orderRepository.findAllByStatus(OrderStatus.DELIVERED);
 
-        Long revenue = (long) 0;
+    Long revenue = 0L;
 
-        for (Order order : allOrders) {
-            revenue += order.getTotalSalePrice();
-        }
+    for (Order order : allDeliveredOrders) {
+        revenue += order.getTotalSalePrice();
+    }
 
-        return revenue;
+    return revenue;
     }
 
     @Override

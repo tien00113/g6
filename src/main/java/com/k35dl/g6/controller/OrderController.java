@@ -1,5 +1,6 @@
 package com.k35dl.g6.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.k35dl.g6.exceptions.OrderException;
+import com.k35dl.g6.models.Notifications;
 import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.User;
+import com.k35dl.g6.repository.NotificationsRepository;
 import com.k35dl.g6.request.CreateOrderRequest;
 import com.k35dl.g6.request.OrderNow;
 import com.k35dl.g6.request.OrderUser;
@@ -36,6 +39,9 @@ public class OrderController {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private NotificationsRepository notificationsRepository;
 
     @PostMapping("/api/order")
     public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request, @RequestHeader("Authorization") String jwt){
@@ -61,9 +67,17 @@ public class OrderController {
 
         Order order = orderService.orderUser(user, request.getShipAddress(), request.getOrderItems(), request.getNote());
 
+        Notifications notifications = new Notifications();
+
+        notifications.setMessage("Bạn có đơn hàng mới");
+        notifications.setRead(false);
+        notifications.setTimestamp(LocalDateTime.now());
+
+        notificationsRepository.save(notifications);
+
         //gửi thông tin đơn hàng qua websocket
-        newOrder(order);
         simpMessagingTemplate.convertAndSend("/topic/orders", order);
+        simpMessagingTemplate.convertAndSend("/topic/notifications", notifications);
 
         return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
@@ -92,11 +106,16 @@ public class OrderController {
         return new ResponseEntity<Order>(order, HttpStatus.OK);
     }
 
-    @MessageMapping("/newOrder")
-    @SendTo("/topic/orders")
-    public Order newOrder(Order order) {
-        System.out.println("Dữ liệu order là: "+order);
-        return order;
-    }
+    // @MessageMapping("/newOrder")
+    // @SendTo("/topic/orders")
+    // public Order newOrder(Order order) {
+    //     return order;
+    // }
+
+    // @MessageMapping("/notifications")
+    // @SendTo("/topic/notifications")
+    // public String newNotifications(String msg){
+    //     return msg;
+    // }
     
 }

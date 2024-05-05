@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.k35dl.g6.models.Notifications;
 import com.k35dl.g6.models.User;
 import com.k35dl.g6.models.User.Role;
+import com.k35dl.g6.repository.NotificationsRepository;
 import com.k35dl.g6.response.RevenueAndOrdersResponse;
 import com.k35dl.g6.service.OrderService;
 import com.k35dl.g6.service.UserSerVice;
@@ -30,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private NotificationsRepository notificationsRepository;
 
     @PutMapping("/user/setrole")
     public User adminSetRoleUser(String adminUsername, String targetUsername, Collection<Role> roles) {
@@ -78,7 +86,28 @@ public class AdminController {
     }
 
     @GetMapping("/customer")
-    public List<User> getAllCustomer(){
+    public List<User> getAllCustomer() {
         return userSerVice.getUsersWithRoleUser();
+    }
+
+    @GetMapping("/notifications")
+    public List<Notifications> getAllNotifications() {
+
+        return notificationsRepository.findAll();
+    }
+
+    @DeleteMapping("/notifications/remove")
+    public ResponseEntity<?> clearNotifications() {
+        Notifications latestNotification = notificationsRepository.findTopByOrderByTimestampDesc();
+
+        if (latestNotification == null) {
+            return new ResponseEntity<>("Không có thông báo nào để xóa", HttpStatus.OK);
+        }
+
+        notificationsRepository.deleteAll();
+        latestNotification.setRead(true);
+        notificationsRepository.save(latestNotification);
+
+        return new ResponseEntity<>("Đã xóa tất cả các thông báo cũ", HttpStatus.OK);
     }
 }
