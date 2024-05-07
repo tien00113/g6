@@ -45,7 +45,7 @@ public class AppConfig {
 
                 CorsConfiguration cfg = new CorsConfiguration();
 
-                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5000","https://admin-h2t.vercel.app"));
+                cfg.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5000","https://admin-h2t.vercel.app", "https://h2t-coffee-g6.vercel.app"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
