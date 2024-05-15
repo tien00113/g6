@@ -32,3 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 src/main/resources/static/geolocation.sql
+src/main/java/com/k35dl/g6/config/JwtConst.java
+src/main/java/com/k35dl/g6/config/JwtProvider.java
+src/main/java/com/k35dl/g6/config/JwtValidatior.java
+src/main/java/com/k35dl/g6/config/AppConfig.java
