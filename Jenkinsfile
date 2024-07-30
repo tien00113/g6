@@ -13,14 +13,17 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("tien00113/h2tcoffee", "-f Dockerfile .")
+                // This step should not normally be used in your script. Consult the inline help for details.
+                withDockerRegistry(credentialsId: 'dockerhub', url: '') {
+                    script {
+                        docker.build("tien00113/h2tcoffee", "-f Dockerfile .")
+                    }
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry(credentialsId: "dockerhub", url: "https://index.docker.io/v1/") {
+                withDockerRegistry(credentialsId: 'dockerhub', url: "https://index.docker.io/v1/") {
                     script {
                         docker.image("tien00113/h2tcoffee").push('latest')
                     }
