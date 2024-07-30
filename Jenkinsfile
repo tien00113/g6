@@ -21,15 +21,15 @@ pipeline {
                 }
             }
         }
-        stage('Push Docker Image') {
-            steps {
-                withDockerRegistry(credentialsId: 'dockerhub', url: "https://index.docker.io/v1/") {
-                    script {
-                        docker.image("tien00113/h2tcoffee").push('latest')
-                    }
-                }
-            }
-        }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         withDockerRegistry(credentialsId: 'dockerhub', url: "https://index.docker.io/v1/") {
+        //             script {
+        //                 docker.image("tien00113/h2tcoffee").push('latest')
+        //             }
+        //         }
+        //     }
+        // }
     }
     post {
         // Clean after build
