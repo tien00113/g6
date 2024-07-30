@@ -6,18 +6,18 @@ pipeline {
         choice(name: 'ACTION', choices: ['Build', 'Remove all'], description: 'Pick something')
     }
     stages {
-        // stage('Clone'){
-        //     steps {
-        //         git branch: 'main', credentialsId: 'github', url: 'https://github.com/tien00113/g6.git'
-        //     }
-        // }
-        stage('Check docker'){
+        stage('Clone'){
             steps {
-                script {
-                    sh 'docker --version'
-                }
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/tien00113/g6.git'
             }
         }
+        // stage('Check docker'){
+        //     steps {
+        //         script {
+        //             sh 'docker --version'
+        //         }
+        //     }
+        // }
         // stage('Build Docker Image') {
         //     steps {
         //         // This step should not normally be used in your script. Consult the inline help for details.
