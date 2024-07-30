@@ -11,23 +11,20 @@ pipeline {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/tien00113/g6.git'
             }
         }
-        stage('Building/Deploying') {
-            when{
-                environment name: 'ACTION', value: 'Build'
-            }
+        stage('Build Docker Image') {
             steps {
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker compose up -d --build'
-                    sh 'docker compose push'
+                script {
+                    docker.build("tien00113/h2tcoffee", "-f Dockerfile .")
                 }
             }
         }
-        stage('Removing all') {
-            when{
-                environment name: 'ACTION', value: 'Remove all'
-            }
+        stage('Push Docker Image') {
             steps {
-                sh 'docker compose down -v '
+                withDockerRegistry(credentialsId: "dockerhub", url: "https://index.docker.io/v1/") {
+                    script {
+                        docker.image("tien00113/h2tcoffee").push('latest')
+                    }
+                }
             }
         }
     }
