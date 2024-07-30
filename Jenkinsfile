@@ -11,16 +11,14 @@ pipeline {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/tien00113/g6.git'
             }
         }
-        // stage('Build Docker Image') {
-        //     steps {
-        //         // This step should not normally be used in your script. Consult the inline help for details.
-        //         withDockerRegistry(credentialsId: 'dockerhub', url: '') {
-        //             script {
-        //                 docker.build("tien00113/h2tcoffee", "-f Dockerfile .")
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                // This step should not normally be used in your script. Consult the inline help for details.
+                withDockerRegistry(credentialsId: 'dockerhub', url: '') {
+                    sh label: '', script: 'docker build -t tien00113/h2tcoffee -f Dockerfile .'
+                }
+            }
+        }
         // stage('Push Docker Image') {
         //     steps {
         //         withDockerRegistry(credentialsId: 'dockerhub', url: "https://index.docker.io/v1/") {
