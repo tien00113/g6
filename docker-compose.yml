@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: coffee-mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: db_coffee
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345678
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3306"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - coffee-mysql-data:/var/lib/mysql
+    networks:
+      - java-app
+    ports:
+      - "3306:3306"
+
+  app:
+    container_name: h2t-coffee
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: tien00113/h2tcoffee
+    ports:
+      - "5454:5454"
+    networks:
+      - java-app
+volumes:
+  coffee-mysql-data:
+networks:
+  java-app:
+    driver: bridge
