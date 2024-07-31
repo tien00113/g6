@@ -1,10 +1,7 @@
 pipeline {
 
     agent any
-
-    parameters {
-        choice(name: 'ACTION', choices: ['Build', 'Remove all'], description: 'Pick something')
-    }
+    
     stages {
         stage('Clone'){
             steps {
