@@ -14,7 +14,7 @@ pipeline {
 
         stage('check docker') {
             steps {
-                sh label '', script: 'docker --version'
+                sh(script: 'docker --version', label: 'Check Docker version')
             }
         }
     }
