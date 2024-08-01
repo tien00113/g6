@@ -24,9 +24,9 @@ services:
       retries: 5
   app:
     container_name: h2t-coffee_back
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile
     image: tien00113/g6-app:1.0
     environment:
       - SERVER_PORT=5454
