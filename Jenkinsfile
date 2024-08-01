@@ -28,8 +28,7 @@ pipeline {
         stage('Push image to dockerhub') {
             steps {
                 withDockerRegistry(credentialsId: 'dockerhub', url: '') {
-                    sh label: '', script: 'docker tag g6-app:latest tien00113/g6-app:latest
-'
+                    sh label: '', script: 'docker tag g6-app:latest tien00113/g6-app:latest'
                     sh label: '', script: 'docker push tien00113/g6-app:latest'
                 }
             }
