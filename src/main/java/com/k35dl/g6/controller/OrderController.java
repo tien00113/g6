@@ -26,7 +26,6 @@ import com.k35dl.g6.service.OrderService;
 import com.k35dl.g6.service.UserSerVice;
 
 @RestController
-// @RequestMapping("/api/order/")
 public class OrderController {
     @Autowired
     private UserSerVice userSerVice;
@@ -72,7 +71,6 @@ public class OrderController {
 
         notificationsRepository.save(notifications);
 
-        //gửi thông tin đơn hàng qua websocket
         simpMessagingTemplate.convertAndSend("/topic/orders", order);
         simpMessagingTemplate.convertAndSend("/topic/notifications", notifications);
 
