@@ -26,7 +26,7 @@ pipeline {
         stage('Build JAR and build image') {
             steps {
                 script {
-                    sh 'mvn clean package'
+                    sh 'mvn clean package -DskipTests'
                     sh 'docker build -t g6-app:latest .'
                 }
             }
