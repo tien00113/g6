@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql_coffee:
     image: mysql:8.0.36
