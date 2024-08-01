@@ -19,16 +19,12 @@ import com.k35dl.g6.models.Order;
 import com.k35dl.g6.models.Order.OrderStatus;
 import com.k35dl.g6.response.ApiResponse;
 import com.k35dl.g6.service.OrderService;
-import com.k35dl.g6.service.UserSerVice;
 
 @RestController
 @RequestMapping("/api/admin/order")
 public class AdminOrderController {
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private UserSerVice userSerVice;
 
     @GetMapping
     public ResponseEntity<List<Order>> getALlOrdersHandle() throws OrderException {
