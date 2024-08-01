@@ -17,6 +17,12 @@ pipeline {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/tien00113/g6.git'
             }
         }
+        stage('init db') {
+            steps {
+                sh 'docker-compose -f ${COMPOSE_FILE} up -d mysql_coffee'
+                sh 'docker-compose -f ${COMPOSE_FILE} exec -T mysql_coffee sh -c "until mysqladmin ping -h mysql_coffee -u root -p 12345678 --silent; do echo Waiting for database; sleep 5; done"'
+            }
+        }
         stage('Build JAR and build image') {
             steps {
                 script {
