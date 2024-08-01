@@ -9,9 +9,20 @@ pipeline {
             }
         }
 
-        stage('check docker') {
+        stage('Build JAR') {
             steps {
-                sh label: '', script: 'docker --version'
+                script {
+                    sh 'mvn clean package'
+                }
+            }
+        }
+
+        stage('Build and push image') {
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub', url: '') {
+                    sh label: '', script: 'docker build -t tien00113/g6-app:latest .'
+                    sh label: '', script: 'docker push tien00113/g6-app:latest'
+                }
             }
         }
     }

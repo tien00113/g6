@@ -1,39 +1,64 @@
 version: '3.8'
 
 services:
-  mysql:
-    container_name: coffee-mysql
-    image: mysql:8.0
+  mysql_coffee:
+    image: mysql:8.0.36
+    restart: unless-stopped
+    container_name: mysql_coffee
+    command: --default-authentication-plugin=mysql_native_password
+    env_file: ./.env
     environment:
-      MYSQL_ROOT_PASSWORD: 12345678
-      MYSQL_DATABASE: db_coffee
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 12345678
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3306"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
+      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_DATABASE=db_coffee
+    ports:
+      - "3308:3306"
     volumes:
       - coffee-mysql-data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
     networks:
       - java-app
-    ports:
-      - "3306:3306"
-
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h mysql_coffee -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   app:
-    container_name: h2t-coffee
+    container_name: h2t-coffee_back
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: tien00113/h2tcoffee
+    image: tien00113/g6-app:1.0
+    environment:
+      - SERVER_PORT=5454
+      - DB_HOST=mysql_coffee
+      - DB_PORT=3306
+      - DB_NAME=db_coffee
+      - DB_USERNAME=root
+      - DB_PASSWORD=12345678
+      - JPA_DDL_AUTO=update
+      - HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
+    depends_on:
+      mysql_coffee:
+        condition: service_healthy
     ports:
       - "5454:5454"
     networks:
       - java-app
+      - client_nw
+  client:
+    image: tien00113/h2t-coffee:1.0
+    container_name: h2t-coffee_front
+    depends_on:
+      mysql_coffee:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    networks:
+      - client_nw
 volumes:
   coffee-mysql-data:
 networks:
   java-app:
+    driver: bridge
+  client_nw:
     driver: bridge
