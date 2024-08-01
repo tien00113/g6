@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker run -d --name mysql_coffee -e MYSQL_ROOT_PASSWORD=12345678 -e MYSQL_DATABASE=db_coffee -p 3308:3306 -v coffee-mysql-data:/var/lib/mysql -v ./mysql:/docker-entrypoint-initdb.d --network java-app mysql:8.0.36 --default-authentication-plugin=mysql_native_password'
-                    sleep(30)
+                    sleep(29)
                 }
             }
         }
