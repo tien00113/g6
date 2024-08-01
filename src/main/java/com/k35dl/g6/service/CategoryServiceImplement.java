@@ -10,7 +10,7 @@ import com.k35dl.g6.models.Category;
 import com.k35dl.g6.repository.CategoryRepository;
 
 @Service
-public class CategoryServiceImplement implements CategoryService {
+public class CategoryServiceImplement implements CategorySerVice {
 
     @Autowired
     private CategoryRepository categoryRepository;

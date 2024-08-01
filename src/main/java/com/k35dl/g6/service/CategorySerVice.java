@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.k35dl.g6.models.Category;
 
-public interface CategoryService {
+public interface CategorySerVice {
     public Category createCategory(Category category) throws Exception;
 
     public Category updateCategory(Category category, Long categoryId) throws Exception;
