@@ -25,7 +25,7 @@ services:
     # build:
     #   context: .
     #   dockerfile: ./Dockerfile
-    image: tien00113/g6-app:1.0
+    image: tien00113/g6-app:latest
     environment:
       - SERVER_PORT=5454
       - DB_HOST=mysql_coffee
