@@ -41,17 +41,6 @@ services:
     networks:
       - java-app
       - client_nw
-  # client:
-  #   image: tien00113/h2t-coffee:1.0
-  #   container_name: h2t-coffee_front
-  #   pull_policy: always
-  #   depends_on:
-  #     mysql_coffee:
-  #       condition: service_healthy
-  #   ports:
-  #     - "3000:80"
-  #   networks:
-  #     - client_nw
 volumes:
   coffee-mysql-data:
 networks:
