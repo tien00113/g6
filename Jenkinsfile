@@ -36,7 +36,7 @@ pipeline {
 
         stage('Deploy run container'){
             steps {
-                sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} down -d'
+                sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} down'
                 sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} up -d'
             }
         }
