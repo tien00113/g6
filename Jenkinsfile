@@ -33,5 +33,11 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy run container'){
+            steps {
+                sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} up -d'
+            }
+        }
     }
 }
