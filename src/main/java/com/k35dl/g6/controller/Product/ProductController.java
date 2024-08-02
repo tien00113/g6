@@ -114,7 +114,7 @@ public class ProductController {
 
     @GetMapping("/allproduct/helloworld")
     public String test(){
-        return "new code and new image 4";
+        return "new code and new image 5";
     }
 
 }
