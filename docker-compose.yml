@@ -3,7 +3,7 @@ services:
     image: mysql:8.0.36
     restart: unless-stopped
     container_name: mysql_coffee
-    # command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password
     env_file: ./.env
     environment:
       - MYSQL_ROOT_PASSWORD=12345678
@@ -25,6 +25,7 @@ services:
     # build:
     #   context: .
     #   dockerfile: ./Dockerfile
+    pull_policy: always
     image: tien00113/g6-app:latest
     environment:
       - SERVER_PORT=5454
@@ -46,6 +47,7 @@ services:
   client:
     image: tien00113/h2t-coffee:1.0
     container_name: h2t-coffee_front
+    pull_policy: always
     depends_on:
       mysql_coffee:
         condition: service_healthy

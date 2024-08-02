@@ -112,4 +112,9 @@ public class ProductController {
         return new ResponseEntity<List<ReViewProduct>>(reViewProducts, HttpStatus.CREATED);
     }
 
+    @GetMapping("/allproduct/helloworld")
+    public String test(){
+        return "new code and new image";
+    }
+
 }
