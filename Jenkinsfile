@@ -40,5 +40,21 @@ pipeline {
                 sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} up -d'
             }
         }
+
+        post {
+            always {
+                mail bcc: '', 
+                 body: "Build pipeline đã hoàn tất.\n\n" +
+                       "Dự án: ${env.JOB_NAME}\n" +
+                       "Build số: ${env.BUILD_NUMBER}\n" +
+                       "Kết quả: ${currentBuild.currentResult}\n" +
+                       "Xem chi tiết: ${env.BUILD_URL}",
+                 cc: '', 
+                 from: '', 
+                 replyTo: '', 
+                 subject: "Jenkins Build Report: ${env.JOB_NAME} #${env.BUILD_NUMBER}", 
+                 to: 'tiennguyenhienvx@gmail.com'
+            }
+        }
     }
 }
